@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router";
 import GreenButton from "../../components/customer/GreenButton";
 import logoImage from "../../assets/logo.png";
@@ -28,14 +28,6 @@ export default function CustomerOnboarding() {
   const isFormValid = isSignup
     ? email.trim() !== "" && password.trim() !== "" && nickname.trim() !== ""
     : email.trim() !== "" && password.trim() !== "";
-
-  useEffect(() => {
-    const isLoggedIn = localStorage.getItem(SALEZ_LOGIN_KEY);
-
-    if (isLoggedIn === "true") {
-      navigate("/customer/home");
-    }
-  }, [navigate]);
 
   const handleSignup = () => {
     setErrorMessage("");

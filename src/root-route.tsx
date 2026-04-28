@@ -19,10 +19,7 @@ import ReviewWrite from "./pages/customer/ReviewWrite";
 export default function RootRoute() {
   return (
     <Routes>
-      <Route
-        path="/"
-        element={<Navigate to="/customer/onboarding" replace />}
-      />
+      <Route path="/" element={<CustomerOnboarding />} />
 
       <Route path="/customer" element={<GlobalLayout appType="customer" />}>
         <Route index element={<Navigate to="home" replace />} />
@@ -48,7 +45,7 @@ export default function RootRoute() {
         <Route path="orders/:orderId/review" element={<ReviewWrite />} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/customer/home" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }
