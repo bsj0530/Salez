@@ -4,20 +4,45 @@ import GreenButton from "../../components/customer/GreenButton";
 import logoImage from "../../assets/logo.png";
 
 type AuthMode = "login" | "signup";
+type UserRole = "customer" | "store";
 
 type LocalUser = {
   email: string;
   password: string;
   nickname: string;
+  role: UserRole;
 };
 
-const SALEZ_USER_KEY = "salez_user";
+const SALEZ_USERS_KEY = "salez_users";
+const SALEZ_CURRENT_USER_KEY = "salez_current_user";
 const SALEZ_LOGIN_KEY = "salez_is_logged_in";
+const SALEZ_STORE_ID_KEY = "salez_store_id";
+
+function getSavedUsers(): LocalUser[] {
+  const savedUsers = localStorage.getItem(SALEZ_USERS_KEY);
+
+  if (!savedUsers) {
+    return [];
+  }
+
+  try {
+    return JSON.parse(savedUsers) as LocalUser[];
+  } catch {
+    return [];
+  }
+}
+
+function saveCurrentUser(user: LocalUser) {
+  localStorage.setItem(SALEZ_CURRENT_USER_KEY, JSON.stringify(user));
+  localStorage.setItem(SALEZ_LOGIN_KEY, "true");
+}
 
 export default function CustomerOnboarding() {
   const navigate = useNavigate();
 
   const [mode, setMode] = useState<AuthMode>("login");
+  const [role, setRole] = useState<UserRole>("customer");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nickname, setNickname] = useState("");
@@ -29,6 +54,22 @@ export default function CustomerOnboarding() {
     ? email.trim() !== "" && password.trim() !== "" && nickname.trim() !== ""
     : email.trim() !== "" && password.trim() !== "";
 
+  const moveByRole = (userRole: UserRole) => {
+    if (userRole === "customer") {
+      navigate("/customer/home");
+      return;
+    }
+
+    const selectedStoreId = localStorage.getItem(SALEZ_STORE_ID_KEY);
+
+    if (selectedStoreId) {
+      navigate("/store/dashboard");
+      return;
+    }
+
+    navigate("/store/signup");
+  };
+
   const handleSignup = () => {
     setErrorMessage("");
 
@@ -37,16 +78,28 @@ export default function CustomerOnboarding() {
       return;
     }
 
+    const users = getSavedUsers();
+
+    const alreadyExists = users.some((user) => user.email === email);
+
+    if (alreadyExists) {
+      setErrorMessage("이미 가입된 이메일입니다. 로그인해주세요.");
+      return;
+    }
+
     const newUser: LocalUser = {
       email,
       password,
       nickname,
+      role,
     };
 
-    localStorage.setItem(SALEZ_USER_KEY, JSON.stringify(newUser));
-    localStorage.setItem(SALEZ_LOGIN_KEY, "true");
+    const nextUsers = [...users, newUser];
 
-    navigate("/customer/home");
+    localStorage.setItem(SALEZ_USERS_KEY, JSON.stringify(nextUsers));
+    saveCurrentUser(newUser);
+
+    moveByRole(newUser.role);
   };
 
   const handleLogin = () => {
@@ -57,26 +110,19 @@ export default function CustomerOnboarding() {
       return;
     }
 
-    const savedUser = localStorage.getItem(SALEZ_USER_KEY);
+    const users = getSavedUsers();
 
-    if (!savedUser) {
-      setErrorMessage("가입된 계정이 없습니다. 먼저 회원가입을 진행해주세요.");
-      return;
-    }
+    const matchedUser = users.find(
+      (user) => user.email === email && user.password === password,
+    );
 
-    const parsedUser = JSON.parse(savedUser) as LocalUser;
-
-    const isCorrectUser =
-      parsedUser.email === email && parsedUser.password === password;
-
-    if (!isCorrectUser) {
+    if (!matchedUser) {
       setErrorMessage("이메일 또는 비밀번호가 일치하지 않습니다.");
       return;
     }
 
-    localStorage.setItem(SALEZ_LOGIN_KEY, "true");
-
-    navigate("/customer/home");
+    saveCurrentUser(matchedUser);
+    moveByRole(matchedUser.role);
   };
 
   const handleSubmit = () => {
@@ -94,6 +140,7 @@ export default function CustomerOnboarding() {
     setEmail("");
     setPassword("");
     setNickname("");
+    setRole("customer");
   };
 
   return (
@@ -143,6 +190,34 @@ export default function CustomerOnboarding() {
           </button>
         </div>
 
+        {isSignup && (
+          <div className="mb-4 grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setRole("customer")}
+              className={`rounded-2xl px-4 py-4 text-[14px] font-black transition ${
+                role === "customer"
+                  ? "bg-emerald-500 text-white shadow-md shadow-emerald-100"
+                  : "bg-gray-50 text-gray-400 ring-1 ring-gray-100"
+              }`}
+            >
+              고객
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setRole("store")}
+              className={`rounded-2xl px-4 py-4 text-[14px] font-black transition ${
+                role === "store"
+                  ? "bg-emerald-500 text-white shadow-md shadow-emerald-100"
+                  : "bg-gray-50 text-gray-400 ring-1 ring-gray-100"
+              }`}
+            >
+              매장
+            </button>
+          </div>
+        )}
+
         <div className="flex flex-col gap-3">
           {isSignup && (
             <div>
@@ -152,7 +227,11 @@ export default function CustomerOnboarding() {
               <input
                 value={nickname}
                 onChange={(event) => setNickname(event.target.value)}
-                placeholder="닉네임을 입력하세요"
+                placeholder={
+                  role === "store"
+                    ? "매장 담당자 이름을 입력하세요"
+                    : "닉네임을 입력하세요"
+                }
                 className="w-full rounded-2xl bg-gray-50 px-4 py-4 text-[15px] ring-1 ring-gray-100 outline-none focus:ring-2 focus:ring-emerald-400"
               />
             </div>
@@ -160,12 +239,12 @@ export default function CustomerOnboarding() {
 
           <div>
             <label className="mb-2 block text-[13px] font-bold text-gray-700">
-              이메일
+              아이디
             </label>
             <input
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="이메일을 입력하세요"
+              placeholder="아이디 또는 이메일을 입력하세요"
               type="email"
               className="w-full rounded-2xl bg-gray-50 px-4 py-4 text-[15px] ring-1 ring-gray-100 outline-none focus:ring-2 focus:ring-emerald-400"
             />
@@ -194,11 +273,17 @@ export default function CustomerOnboarding() {
 
       <div className="flex flex-col gap-3 pb-4">
         <GreenButton disabled={!isFormValid} onClick={handleSubmit}>
-          {isSignup ? "회원가입하고 시작하기" : "로그인하기"}
+          {isSignup
+            ? role === "store"
+              ? "매장 회원가입하기"
+              : "고객 회원가입하기"
+            : "로그인하기"}
         </GreenButton>
 
         <p className="mt-3 text-center text-[12px] leading-5 text-gray-400">
-          현재 위치를 기반으로 주변 마감 할인 상품을 보여드려요.
+          {isSignup
+            ? "가입 유형에 따라 고객 화면 또는 매장 화면으로 이동합니다."
+            : "가입한 유형에 따라 고객 화면 또는 매장 화면으로 이동합니다."}
         </p>
       </div>
     </div>

@@ -1,13 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
-import CustomerHeader from "../../components/customer/CustomerHeader";
-import GreenButton from "../../components/customer/GreenButton";
-import StoreCard from "../../components/customer/StoreCard";
 import { mockProducts, mockStores } from "../../data/mockProducts";
 import { useSalezStore } from "../../store/useSalezStore";
-import type { Store } from "../../types/product";
 
-type FilterType = "all" | "discount50" | "distance500" | "now" | "rating";
+type TopTab = "home" | "farm" | "bakery" | "meal" | "event";
 
 function getDistanceKm(
   fromLat: number,
@@ -46,10 +42,9 @@ export default function CustomerHome() {
   const userLocation = useSalezStore((state) => state.userLocation);
   const setUserLocation = useSalezStore((state) => state.setUserLocation);
   const cartItems = useSalezStore((state) => state.cartItems);
-  const latestOrder = useSalezStore((state) => state.orders[0]);
 
   const [query, setQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState<FilterType>("all");
+  const [selectedTab, setSelectedTab] = useState<TopTab>("home");
   const [isLocationLoading, setIsLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState("");
 
@@ -57,6 +52,8 @@ export default function CustomerHome() {
   const [addressKeyword, setAddressKeyword] = useState("");
   const [addressError, setAddressError] = useState("");
   const [isAddressSearching, setIsAddressSearching] = useState(false);
+
+  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
   const getAddressByCoords = (lat: number, lng: number) => {
     if (!window.kakao) {
@@ -99,7 +96,7 @@ export default function CustomerHome() {
     setLocationError("");
 
     if (!navigator.geolocation) {
-      setLocationError("위치 기능을 사용할 수 없어요.");
+      setLocationError("기본 위치로 표시 중");
       setUserLocation({
         lat: 37.588227,
         lng: 126.993606,
@@ -193,7 +190,7 @@ export default function CustomerHome() {
     }
   }, []);
 
-  const storesWithDistance = useMemo<Store[]>(() => {
+  const storesWithDistance = useMemo(() => {
     if (!userLocation) return mockStores;
 
     return mockStores
@@ -214,236 +211,398 @@ export default function CustomerHome() {
       .sort((a, b) => a.distance - b.distance);
   }, [userLocation]);
 
-  const filteredStores = useMemo(() => {
+  const productsWithStore = useMemo(() => {
     const keyword = query.trim().toLowerCase();
 
-    let result = storesWithDistance.filter((store) => {
-      const products = mockProducts.filter(
-        (product) => product.storeId === store.id,
-      );
-
-      const matchesKeyword =
-        keyword === "" ||
-        store.name.toLowerCase().includes(keyword) ||
-        store.brand.toLowerCase().includes(keyword) ||
-        store.address.toLowerCase().includes(keyword) ||
-        products.some((product) =>
-          product.name.toLowerCase().includes(keyword),
+    return mockProducts
+      .map((product) => {
+        const store = storesWithDistance.find(
+          (item) => item.id === product.storeId,
         );
 
-      if (!matchesKeyword) return false;
+        return {
+          ...product,
+          store,
+        };
+      })
+      .filter((product) => {
+        const store = product.store;
+        const name = product.name.toLowerCase();
+        const storeName = store?.name.toLowerCase() ?? "";
 
-      if (selectedFilter === "discount50") {
-        return products.some((product) => product.discountRate >= 50);
-      }
+        if (
+          keyword &&
+          !name.includes(keyword) &&
+          !storeName.includes(keyword)
+        ) {
+          return false;
+        }
 
-      if (selectedFilter === "distance500") {
-        return store.distance <= 0.5;
-      }
+        if (selectedTab === "bakery") {
+          return (
+            name.includes("빵") ||
+            name.includes("샌드위치") ||
+            name.includes("베이커리")
+          );
+        }
 
-      if (selectedFilter === "now") {
-        return products.some((product) => product.stock > 0);
-      }
+        if (selectedTab === "farm") {
+          return (
+            name.includes("사과") ||
+            name.includes("감자") ||
+            name.includes("농산물") ||
+            name.includes("과일")
+          );
+        }
 
-      if (selectedFilter === "rating") {
-        return store.rating >= 4.6;
-      }
+        if (selectedTab === "meal") {
+          return (
+            name.includes("반찬") ||
+            name.includes("도시락") ||
+            name.includes("간편식") ||
+            name.includes("샌드위치")
+          );
+        }
 
-      return true;
-    });
+        return true;
+      });
+  }, [query, selectedTab, storesWithDistance]);
 
-    if (selectedFilter === "rating") {
-      result = [...result].sort((a, b) => b.rating - a.rating);
-    }
-
-    if (selectedFilter === "distance500") {
-      result = [...result].sort((a, b) => a.distance - b.distance);
-    }
-
-    return result;
-  }, [query, selectedFilter, storesWithDistance]);
-
-  const filterButtons: { label: string; value: FilterType }[] = [
-    { label: "전체", value: "all" },
-    { label: "50%↑", value: "discount50" },
-    { label: "500m 이내", value: "distance500" },
-    { label: "지금 수령", value: "now" },
-    { label: "리뷰 높은 순", value: "rating" },
+  const topTabs: { label: string; value: TopTab }[] = [
+    { label: "홈", value: "home" },
+    { label: "농산물", value: "farm" },
+    { label: "베이커리", value: "bakery" },
+    { label: "간편식 · 반찬", value: "meal" },
+    { label: "이벤트", value: "event" },
   ];
 
-  const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  const quickMenus = [
+    {
+      icon: "🕘",
+      title: "마감임박",
+      desc: "오늘 안에 득템!",
+      onClick: () => setSelectedTab("home"),
+    },
+    {
+      icon: "🥖",
+      title: "베이커리",
+      desc: "빵 · 디저트 할인",
+      onClick: () => setSelectedTab("bakery"),
+    },
+    {
+      icon: "🍱",
+      title: "간편식 · 반찬",
+      desc: "당일 조리 식품",
+      onClick: () => setSelectedTab("meal"),
+    },
+    {
+      icon: "🥬",
+      title: "과일 · 농산물",
+      desc: "신선한 제철 농산물",
+      onClick: () => setSelectedTab("farm"),
+    },
+    {
+      icon: "🏷️",
+      title: "최대 할인",
+      desc: "최대 70% 혜택",
+      onClick: () => setSelectedTab("home"),
+    },
+    {
+      icon: "🚚",
+      title: "무료배송",
+      desc: "일부 상품 무료배송",
+      onClick: () => setSelectedTab("home"),
+    },
+  ];
 
   return (
     <>
-      <CustomerHeader title="SALEZ" />
+      <main className="min-h-screen bg-[#f7f8f5] pb-24">
+        <header className="sticky top-0 z-40 bg-white/95 px-5 pt-4 shadow-sm backdrop-blur">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={handleOpenAddressModal}
+              className="flex min-w-0 shrink-0 items-center gap-2"
+            >
+              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-800 text-white">
+                📍
+              </div>
 
-      <main className="min-h-screen bg-gray-50 px-5 pt-4 pb-28">
-        <div className="mb-3 flex max-w-full items-center gap-1 rounded-full bg-white px-3 py-1.5 shadow-sm">
-          <span className="text-[12px]">📍</span>
-
-          <span className="max-w-[235px] truncate text-[12px] font-bold text-gray-600">
-            {isLocationLoading
-              ? "위치 확인 중..."
-              : userLocation?.address || "서울 성북구 성북동"}
-          </span>
-
-          <button
-            type="button"
-            onClick={handleOpenAddressModal}
-            className="text-[11px] font-bold text-emerald-600"
-          >
-            변경
-          </button>
-        </div>
-
-        {locationError && (
-          <p className="mb-3 px-1 text-[11px] font-semibold text-gray-400">
-            {locationError}
-          </p>
-        )}
-
-        {latestOrder && (
-          <section className="mb-5 rounded-3xl border border-emerald-100 bg-white p-5 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-[12px] font-bold text-emerald-600">
-                  진행 중인 주문
+              <div className="text-left">
+                <h1 className="text-[28px] leading-none font-black tracking-wide text-emerald-800">
+                  SALEZ
+                </h1>
+                <p className="mt-1 max-w-[110px] truncate text-[11px] font-semibold text-gray-500">
+                  {isLocationLoading
+                    ? "위치 확인 중..."
+                    : userLocation?.address || "가치 있는 소비의 시작"}
                 </p>
-
-                <h2 className="mt-1 line-clamp-1 text-[18px] font-black text-gray-900">
-                  {latestOrder.productName}
-                </h2>
               </div>
+            </button>
 
-              <span className="shrink-0 rounded-full bg-emerald-50 px-3 py-1 text-[12px] font-bold text-emerald-700">
-                예약 완료
-              </span>
-            </div>
+            <div className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-gray-200 bg-white px-4">
+              <span className="text-[16px]">🔍</span>
 
-            <div className="mt-4 space-y-2 text-[13px]">
-              <div className="flex justify-between gap-4">
-                <span className="shrink-0 text-gray-400">주문번호</span>
-                <span className="truncate font-bold text-gray-900">
-                  {latestOrder.id}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-400">수령 시간</span>
-                <span className="font-bold text-gray-900">
-                  {latestOrder.pickupTime}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-400">결제 금액</span>
-                <span className="font-bold text-emerald-600">
-                  {latestOrder.totalPrice.toLocaleString("ko-KR")}원
-                </span>
-              </div>
+              <input
+                value={query}
+                onChange={(event) => setQuery(event.target.value)}
+                placeholder="상품 검색..."
+                className="w-full bg-transparent text-[14px] font-semibold outline-none placeholder:text-gray-400"
+              />
             </div>
 
             <button
               type="button"
-              onClick={() =>
-                navigate(`/customer/orders/${latestOrder.id}/stores`)
-              }
-              className="mt-4 w-full rounded-2xl bg-emerald-500 py-3 text-[14px] font-black text-white active:scale-[0.98]"
+              onClick={() => navigate("/customer/cart")}
+              className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-[22px]"
             >
-              매장별 주문번호 보기
+              🔔
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-700 px-1 text-[11px] font-black text-white">
+                  {cartCount}
+                </span>
+              )}
             </button>
-          </section>
-        )}
-
-        <section>
-          <div className="flex items-center gap-2 rounded-2xl bg-white px-4 py-3 shadow-sm">
-            <span className="text-gray-400">🔍</span>
-
-            <input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder="매장명이나 상품명을 검색해보세요"
-              className="w-full bg-transparent text-[14px] outline-none placeholder:text-gray-400"
-            />
-
-            {query && (
-              <button
-                type="button"
-                onClick={() => setQuery("")}
-                className="shrink-0 text-[13px] font-bold text-gray-400"
-              >
-                지우기
-              </button>
-            )}
           </div>
 
-          <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1">
-            {filterButtons.map((filter) => (
+          <nav className="mt-5 flex items-center justify-between">
+            {topTabs.map((tab) => (
               <button
-                key={filter.value}
+                key={tab.value}
                 type="button"
-                onClick={() => setSelectedFilter(filter.value)}
-                className={`shrink-0 rounded-full px-4 py-2 text-[13px] font-bold ${
-                  selectedFilter === filter.value
-                    ? "bg-emerald-500 text-white"
-                    : "border border-emerald-100 bg-white text-emerald-700"
-                }`}
+                onClick={() => setSelectedTab(tab.value)}
+                className="relative px-1 pb-3 text-[15px] font-black text-gray-900"
               >
-                {filter.label}
+                {tab.label}
+
+                {selectedTab === tab.value && (
+                  <span className="absolute bottom-0 left-1/2 h-1 w-full -translate-x-1/2 rounded-full bg-emerald-700" />
+                )}
               </button>
             ))}
+          </nav>
+        </header>
+
+        {locationError && (
+          <p className="mx-5 mt-3 rounded-2xl bg-white px-4 py-2 text-[12px] font-bold text-gray-400">
+            {locationError}
+          </p>
+        )}
+
+        <section className="mx-5 mt-4 overflow-hidden rounded-3xl bg-gradient-to-r from-[#f6fbf2] to-[#eef8e8] p-5 shadow-sm">
+          <div className="flex items-start justify-between gap-4">
+            <div className="min-w-0">
+              <span className="rounded-full bg-emerald-800 px-3 py-1 text-[12px] font-black text-white">
+                지금이 기회!
+              </span>
+
+              <p className="mt-4 text-[17px] font-black text-gray-900">
+                버려질 수도 있는 상품,
+              </p>
+
+              <h2 className="mt-1 text-[30px] leading-tight font-black text-gray-950">
+                오늘의{" "}
+                <span className="tracking-wider text-emerald-800">SALEZ</span>로
+                <br />
+                가치 있게 소비하세요
+              </h2>
+
+              <p className="mt-4 text-[14px] leading-6 font-semibold text-gray-700">
+                유통기한 임박 상품부터
+                <br />
+                과일 · 농산물까지 한 곳에서!
+              </p>
+            </div>
+
+            <div className="flex shrink-0 flex-col items-center">
+              <p className="text-[13px] font-black text-emerald-800">최대</p>
+              <p className="text-[52px] leading-none font-black text-emerald-800">
+                70%
+              </p>
+              <p className="text-[18px] font-black text-emerald-800">할인!</p>
+
+              <div className="mt-6 text-[72px] leading-none">🛍️</div>
+            </div>
+          </div>
+
+          <div className="mt-4 flex justify-end">
+            <button
+              type="button"
+              onClick={() => navigate("/customer/products")}
+              className="rounded-full bg-black/70 px-4 py-2 text-[13px] font-black text-white"
+            >
+              1 / 3 전체보기 〉
+            </button>
           </div>
         </section>
 
-        <section className="mt-6">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-[20px] font-black text-gray-900">주변 빵집</h2>
+        <section className="mx-5 mt-4 grid grid-cols-3 gap-3">
+          {quickMenus.map((menu) => (
+            <button
+              key={menu.title}
+              type="button"
+              onClick={menu.onClick}
+              className="flex min-h-[82px] items-center gap-3 rounded-2xl border border-gray-100 bg-white px-3 py-3 text-left shadow-sm active:scale-[0.98]"
+            >
+              <span className="text-[33px]">{menu.icon}</span>
 
-            <p className="text-[13px] font-bold text-emerald-600">
-              {filteredStores.length}군데
-            </p>
+              <span className="min-w-0">
+                <span className="block text-[15px] font-black text-gray-900">
+                  {menu.title}
+                </span>
+
+                <span className="mt-1 block truncate text-[12px] font-semibold text-gray-500">
+                  {menu.desc}
+                </span>
+              </span>
+            </button>
+          ))}
+        </section>
+
+        <section className="mx-5 mt-4 flex items-center justify-between rounded-3xl bg-white px-5 py-4 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="text-[50px]">🌱</div>
+
+            <div>
+              <p className="text-[14px] font-black text-emerald-700">
+                SALEZ와 함께하는 가치 있는 소비
+              </p>
+
+              <h3 className="mt-1 text-[20px] font-black text-gray-900">
+                음식물 폐기 감소에 동참해요 🌎
+              </h3>
+
+              <p className="mt-1 text-[13px] font-semibold text-gray-500">
+                지금까지 12,345kg의 음식을 폐기로부터 막았어요!
+              </p>
+            </div>
           </div>
 
-          {filteredStores.length === 0 ? (
+          <button
+            type="button"
+            className="shrink-0 rounded-full bg-emerald-800 px-4 py-2 text-[13px] font-black text-white"
+          >
+            더보기 〉
+          </button>
+        </section>
+
+        <section className="mx-5 mt-5">
+          <div className="mb-3 flex items-center justify-between">
+            <h2 className="text-[19px] font-black text-gray-900">
+              ⭐ 금주의 추천상품
+            </h2>
+
+            <button
+              type="button"
+              onClick={() => navigate("/customer/products")}
+              className="text-[13px] font-black text-emerald-700"
+            >
+              전체보기
+            </button>
+          </div>
+
+          {productsWithStore.length === 0 ? (
             <div className="rounded-3xl bg-white p-8 text-center shadow-sm">
               <p className="text-[16px] font-black text-gray-900">
                 검색 결과가 없어요
               </p>
-              <p className="mt-2 text-[13px] text-gray-400">
-                다른 검색어나 필터를 선택해보세요.
+              <p className="mt-2 text-[13px] font-semibold text-gray-400">
+                다른 검색어를 입력해보세요.
               </p>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
-              {filteredStores.map((store) => (
-                <StoreCard key={store.id} store={store} />
-              ))}
+            <div className="grid grid-cols-2 gap-3">
+              {productsWithStore.slice(0, 4).map((product) => {
+                const item = product as any;
+                const store = product.store;
+
+                const image =
+                  item.imageUrl ||
+                  item.image ||
+                  item.thumbnail ||
+                  "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop";
+
+                const originalPrice =
+                  item.originalPrice || product.originalPrice;
+                const salePrice = product.salePrice;
+                return (
+                  <button
+                    key={product.id}
+                    type="button"
+                    onClick={() => navigate(`/customer/products/${product.id}`)}
+                    className="overflow-hidden rounded-2xl bg-white text-left shadow-sm active:scale-[0.98]"
+                  >
+                    <div className="relative h-28 overflow-hidden bg-gray-100">
+                      <img
+                        src={image}
+                        alt={product.name}
+                        className="h-full w-full object-cover"
+                      />
+
+                      <span className="absolute top-2 left-2 rounded-md bg-emerald-700 px-2 py-1 text-[12px] font-black text-white">
+                        {item.deliveryType === "delivery" ? "배송" : "수령"}
+                      </span>
+
+                      <span className="absolute bottom-0 left-0 rounded-tr-lg bg-red-500 px-2 py-1 text-[15px] font-black text-white">
+                        {product.discountRate}%
+                      </span>
+
+                      <span className="absolute top-2 right-2 text-[24px] text-white drop-shadow">
+                        ♡
+                      </span>
+                    </div>
+
+                    <div className="p-3">
+                      <h3 className="line-clamp-1 text-[14px] font-black text-gray-900">
+                        {product.name}
+                      </h3>
+
+                      <div className="mt-1 flex items-end gap-2">
+                        <p className="text-[17px] font-black text-gray-950">
+                          {salePrice.toLocaleString("ko-KR")}원{" "}
+                        </p>
+
+                        <p className="text-[13px] font-bold text-gray-400 line-through">
+                          {originalPrice.toLocaleString("ko-KR")}원
+                        </p>
+                      </div>
+
+                      <p className="mt-2 line-clamp-1 text-[12px] font-semibold text-gray-500">
+                        ⏱ 오늘 {item.pickupTime || "20:00"}까지 수령
+                      </p>
+
+                      <p className="mt-1 line-clamp-1 text-[12px] font-bold text-emerald-700">
+                        {store?.name || "SALEZ 매장"} ·{" "}
+                        {store?.distanceText || "0.3km"}
+                      </p>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           )}
         </section>
 
-        <div className="fixed bottom-5 left-1/2 flex w-full max-w-[430px] -translate-x-1/2 gap-3 px-5">
-          <button
-            type="button"
-            onClick={() => navigate("/customer/cart")}
-            className="relative h-[56px] w-[72px] shrink-0 rounded-2xl bg-white text-[22px] shadow-lg active:scale-[0.98]"
-          >
-            🛒
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-emerald-500 text-[12px] font-black text-white">
-                {cartCount}
-              </span>
-            )}
-          </button>
+        <section className="mx-5 mt-4 flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
+          <div className="flex items-center gap-4">
+            <div className="text-[48px]">📦</div>
 
-          <GreenButton onClick={() => navigate("/customer/map")}>
-            📍 지도에서 상품 보기
-          </GreenButton>
-        </div>
+            <div>
+              <h3 className="text-[18px] font-black text-emerald-800">
+                오후 3시까지 주문 시 당일 발송!
+              </h3>
+
+              <p className="mt-1 text-[13px] font-semibold text-gray-600">
+                판매처에서 택배로 안전하게 보내드려요
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
 
       {isAddressModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/40">
+        <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/40">
           <div className="w-full max-w-[430px] rounded-t-3xl bg-white p-5 shadow-2xl">
             <div className="mb-5 flex items-center justify-between">
               <h2 className="text-[20px] font-black text-gray-900">
@@ -485,22 +644,25 @@ export default function CustomerHome() {
             )}
 
             <div className="mt-4 flex flex-col gap-3">
-              <GreenButton
+              <button
+                type="button"
                 onClick={handleSearchAddress}
                 disabled={isAddressSearching}
+                className="h-[52px] rounded-2xl bg-emerald-700 text-[15px] font-black text-white disabled:opacity-50"
               >
                 {isAddressSearching ? "주소 찾는 중..." : "이 위치로 변경하기"}
-              </GreenButton>
+              </button>
 
-              <GreenButton
-                variant="outline"
+              <button
+                type="button"
                 onClick={() => {
                   setIsAddressModalOpen(false);
                   requestCurrentLocation();
                 }}
+                className="h-[52px] rounded-2xl border border-emerald-200 bg-white text-[15px] font-black text-emerald-700"
               >
                 현재 위치 사용하기
-              </GreenButton>
+              </button>
             </div>
           </div>
         </div>
