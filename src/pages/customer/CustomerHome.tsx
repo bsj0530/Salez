@@ -4,7 +4,7 @@ import { useNavigate } from "react-router";
 import logo from "../../assets/logo.png";
 import breadIcon from "../../assets/bread.png";
 import bentoIcon from "../../assets/bento.png";
-import dessertIcon from "../../assets/strawberry-cake.png";
+import meatIcon from "../../assets/meat.png";
 import gridIcon from "../../assets/grid.png";
 import shoppingBagIcon from "../../assets/shopping-bag.png";
 import mapRedIcon from "../../assets/mapred.png";
@@ -14,13 +14,7 @@ import vegetableIcon from "../../assets/vegetable.png";
 import { mockProducts, mockStores } from "../../data/mockProducts";
 import { useSalezStore } from "../../store/useSalezStore";
 
-type TopTab =
-  | "all"
-  | "bakery"
-  | "lunchBox"
-  | "sideDish"
-  | "farm"
-  | "dessert";
+type TopTab = "all" | "bakery" | "lunchBox" | "sideDish" | "farm" | "meat";
 
 type CategoryKey = Exclude<TopTab, "all">;
 
@@ -81,8 +75,8 @@ function isFarmCategory(category: string) {
   return ["fruit", "vegetable", "farm"].includes(category);
 }
 
-function isDessertCategory(category: string) {
-  return ["dessert", "cake", "snack"].includes(category);
+function isMeatCategory(category: string) {
+  return ["meat", "butcher", "pork", "beef", "chicken"].includes(category);
 }
 
 export default function CustomerHome() {
@@ -317,8 +311,8 @@ export default function CustomerHome() {
           return isFarmCategory(category);
         }
 
-        if (selectedTab === "dessert") {
-          return isDessertCategory(category);
+        if (selectedTab === "meat") {
+          return isMeatCategory(category);
         }
 
         return true;
@@ -343,41 +337,41 @@ export default function CustomerHome() {
     { label: "도시락", value: "lunchBox" },
     { label: "반찬", value: "sideDish" },
     { label: "농산물", value: "farm" },
-    { label: "디저트", value: "dessert" },
+    { label: "정육", value: "meat" },
   ];
 
-const quickMenus = [
-  {
-    icon: breadIcon,
-    title: "베이커리",
-    onClick: () => goCategory("bakery"),
-  },
-  {
-    icon: bentoIcon,
-    title: "도시락",
-    onClick: () => goCategory("lunchBox"),
-  },
-  {
-    icon: balancedDietIcon,
-    title: "반찬",
-    onClick: () => goCategory("sideDish"),
-  },
-  {
-    icon: vegetableIcon,
-    title: "농산물",
-    onClick: () => goCategory("farm"),
-  },
-  {
-    icon: dessertIcon,
-    title: "디저트",
-    onClick: () => goCategory("dessert"),
-  },
-  {
-    icon: gridIcon,
-    title: "전체",
-    onClick: goAllProducts,
-  },
-];
+  const quickMenus = [
+    {
+      icon: breadIcon,
+      title: "베이커리",
+      onClick: () => goCategory("bakery"),
+    },
+    {
+      icon: bentoIcon,
+      title: "도시락",
+      onClick: () => goCategory("lunchBox"),
+    },
+    {
+      icon: balancedDietIcon,
+      title: "반찬",
+      onClick: () => goCategory("sideDish"),
+    },
+    {
+      icon: vegetableIcon,
+      title: "농산물",
+      onClick: () => goCategory("farm"),
+    },
+    {
+      icon: meatIcon,
+      title: "정육",
+      onClick: () => goCategory("meat"),
+    },
+    {
+      icon: gridIcon,
+      title: "전체",
+      onClick: goAllProducts,
+    },
+  ];
 
   return (
     <>
@@ -460,8 +454,8 @@ const quickMenus = [
 
         <section className="mx-5 mt-4 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#f1fbf4] via-white to-[#eef8e8] p-5 shadow-sm ring-1 ring-emerald-100">
           <div className="relative">
-            <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-emerald-200/40 blur-2xl" />
-            <div className="absolute -left-10 bottom-0 h-24 w-24 rounded-full bg-lime-200/40 blur-2xl" />
+            <div className="absolute -top-8 -right-8 h-28 w-28 rounded-full bg-emerald-200/40 blur-2xl" />
+            <div className="absolute bottom-0 -left-10 h-24 w-24 rounded-full bg-lime-200/40 blur-2xl" />
 
             <div className="relative flex items-center justify-between gap-4">
               <div className="min-w-0 flex-1">
@@ -564,7 +558,7 @@ const quickMenus = [
             <div className="flex items-center gap-4">
               <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-emerald-50">
                 <span className="text-[36px]">🌱</span>
-                <span className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-lime-300" />
+                <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-lime-300" />
               </div>
 
               <div className="min-w-0">
@@ -580,9 +574,7 @@ const quickMenus = [
 
                 <p className="mt-2 text-[13px] leading-5 font-semibold text-gray-500">
                   지금까지{" "}
-                  <span className="font-black text-emerald-700">
-                    12,345kg
-                  </span>
+                  <span className="font-black text-emerald-700">12,345kg</span>
                   의 음식을 폐기로부터 막았어요!
                 </p>
               </div>
@@ -704,8 +696,6 @@ const quickMenus = [
             </div>
           )}
         </section>
-
-
       </main>
 
       {isAddressModalOpen && (

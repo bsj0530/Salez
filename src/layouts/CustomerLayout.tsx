@@ -1,8 +1,8 @@
 import { Outlet, useLocation, useNavigate } from "react-router";
 
 import homeIcon from "../assets/home.png";
-import starIcon from "../assets/star.png";
-import orderIcon from "../assets/grid.png";
+import saleIcon from "../assets/sale.png";
+import cartIcon from "../assets/cart.png";
 import mapIcon from "../assets/maps-and-flags.png";
 import userIcon from "../assets/user.png";
 
@@ -13,14 +13,14 @@ const navItems = [
     icon: homeIcon,
   },
   {
-    label: "추천상품",
-    path: "/customer/products?category=recommend",
-    icon: starIcon,
+    label: "세일나우",
+    path: "/customer/sale",
+    icon: saleIcon,
   },
   {
     label: "주문내역",
     path: "/customer/orders",
-    icon: orderIcon,
+    icon: cartIcon,
   },
   {
     label: "지도",
@@ -39,11 +39,6 @@ export default function CustomerLayout() {
   const location = useLocation();
 
   const isActive = (path: string) => {
-    if (path.includes("?")) {
-      const [pathname, search] = path.split("?");
-      return location.pathname === pathname && location.search === `?${search}`;
-    }
-
     if (path === "/customer/home") {
       return location.pathname === "/customer/home";
     }
@@ -72,14 +67,14 @@ export default function CustomerLayout() {
                   alt={item.label}
                   className={[
                     "h-6 w-6 object-contain transition",
-                    active ? "opacity-100" : "opacity-40",
+                    active ? "scale-110 opacity-100" : "opacity-45",
                   ].join(" ")}
                 />
 
                 <span
                   className={[
-                    "text-[10px] font-semibold leading-none",
-                    active ? "text-black" : "text-gray-400",
+                    "text-[10px] leading-none font-semibold",
+                    active ? "text-emerald-700" : "text-gray-400",
                   ].join(" ")}
                 >
                   {item.label}

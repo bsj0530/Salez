@@ -11,7 +11,7 @@ type ProductListCategory =
   | "lunchBox"
   | "sideDish"
   | "farm"
-  | "dessert"
+  | "meat"
   | "event";
 
 const categoryTabs: {
@@ -24,7 +24,7 @@ const categoryTabs: {
   { label: "도시락", value: "lunchBox" },
   { label: "반찬", value: "sideDish" },
   { label: "농산물", value: "farm" },
-  { label: "디저트", value: "dessert" },
+  { label: "정육", value: "meat" },
 ];
 
 function normalizeCategory(category: string | null): ProductListCategory {
@@ -34,7 +34,7 @@ function normalizeCategory(category: string | null): ProductListCategory {
     category === "lunchBox" ||
     category === "sideDish" ||
     category === "farm" ||
-    category === "dessert" ||
+    category === "meat" ||
     category === "event"
   ) {
     return category;
@@ -49,8 +49,9 @@ function getHeaderTitle(category: ProductListCategory) {
   if (category === "lunchBox") return "도시락 마감 할인";
   if (category === "sideDish") return "반찬 마감 할인";
   if (category === "farm") return "농산물 마감 할인";
-  if (category === "dessert") return "디저트 마감 할인";
+  if (category === "meat") return "정육 마감 할인";
   if (category === "event") return "특가 상품";
+
   return "마감 할인 상품";
 }
 
@@ -83,8 +84,8 @@ function isProductInCategory(
     return ["fruit", "vegetable", "farm"].includes(productCategory);
   }
 
-  if (selectedCategory === "dessert") {
-    return ["dessert", "cake", "snack"].includes(productCategory);
+  if (selectedCategory === "meat") {
+    return ["meat", "pork", "beef", "chicken"].includes(productCategory);
   }
 
   if (selectedCategory === "event") {

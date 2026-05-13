@@ -8,6 +8,8 @@ import CustomerLayout from "./layouts/CustomerLayout";
  */
 import CustomerOnboarding from "./pages/customer/CustomerOnboarding";
 import CustomerHome from "./pages/customer/CustomerHome";
+import DeliverySale from "./pages/customer/DeliverySale";
+import DeliveryCheckout from "./pages/customer/DeliveryCheckout";
 import CustomerMap from "./pages/customer/CustomerMap";
 import StoreDetail from "./pages/customer/StoreDetail";
 import ProductList from "./pages/customer/ProductList";
@@ -35,21 +37,22 @@ import StoreReport from "./pages/store/StoreReport";
 export default function RootRoute() {
   return (
     <Routes>
-      {/* 기본 진입: 주소창은 / 그대로 두고 온보딩 표시 */}
       <Route path="/" element={<CustomerOnboarding />} />
 
-      {/* =========================
-          고객 앱
-      ========================= */}
       <Route path="/customer" element={<GlobalLayout appType="customer" />}>
         <Route index element={<Navigate to="home" replace />} />
 
-        {/* 온보딩은 하단바 없이 표시 */}
         <Route path="onboarding" element={<CustomerOnboarding />} />
 
-        {/* 하단 underbar가 필요한 고객 화면 */}
         <Route element={<CustomerLayout />}>
           <Route path="home" element={<CustomerHome />} />
+
+          <Route path="sale" element={<DeliverySale />} />
+          <Route
+            path="delivery-checkout/:productId"
+            element={<DeliveryCheckout />}
+          />
+
           <Route path="map" element={<CustomerMap />} />
 
           <Route path="stores/:storeId" element={<StoreDetail />} />
@@ -59,13 +62,9 @@ export default function RootRoute() {
 
           <Route path="cart" element={<Cart />} />
 
-          {/* 마이페이지 */}
           <Route path="my" element={<MyPage />} />
 
-          {/* 장바구니 전체 결제 */}
           <Route path="checkout" element={<Checkout />} />
-
-          {/* 상품 상세에서 바로 결제 */}
           <Route path="checkout/:productId" element={<Checkout />} />
 
           <Route path="orders" element={<CustomerOrders />} />
@@ -76,9 +75,6 @@ export default function RootRoute() {
         </Route>
       </Route>
 
-      {/* =========================
-          매장 앱
-      ========================= */}
       <Route path="/store" element={<GlobalLayout appType="store" />}>
         <Route index element={<Navigate to="dashboard" replace />} />
 
@@ -97,7 +93,6 @@ export default function RootRoute() {
         <Route path="report" element={<StoreReport />} />
       </Route>
 
-      {/* 예외 경로 */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );

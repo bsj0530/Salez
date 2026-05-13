@@ -2,19 +2,19 @@ export type ProductCategory =
   | "bread"
   | "bakery"
   | "sandwich"
-  | "cake"
-  | "dessert"
-  | "salad"
+  | "lunchBox"
+  | "meal"
+  | "sideDish"
   | "fruit"
   | "vegetable"
   | "farm"
-  | "meal"
-  | "lunchBox"
-  | "sideDish"
-  | "cafe"
-  | "coffee"
-  | "drink"
+  | "meat"
+  | "dessert"
+  | "cake"
+  | "snack"
   | "event";
+
+export type DeliveryType = "pickup" | "delivery";
 
 export type Store = {
   id: string;
@@ -53,4 +53,5 @@ export type Product = {
   expiryDate: string;
   isEvent?: boolean;
   isRecommended?: boolean;
+  deliveryType?: DeliveryType;
 };
