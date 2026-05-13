@@ -705,21 +705,7 @@ const quickMenus = [
           )}
         </section>
 
-        <section className="mx-5 mt-4 flex items-center justify-between rounded-2xl border border-gray-100 bg-white px-5 py-4 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="text-[48px]">📍</div>
 
-            <div>
-              <h3 className="text-[18px] font-black text-emerald-800">
-                가까운 매장에서 바로 수령!
-              </h3>
-
-              <p className="mt-1 text-[13px] font-semibold text-gray-600">
-                주문 후 정해진 시간 안에 방문해 상품을 받아가세요
-              </p>
-            </div>
-          </div>
-        </section>
       </main>
 
       {isAddressModalOpen && (
