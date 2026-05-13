@@ -1,6 +1,16 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
+
 import logo from "../../assets/logo.png";
+import breadIcon from "../../assets/bread.png";
+import saladIcon from "../../assets/salad.png";
+import bentoIcon from "../../assets/bento.png";
+import latteIcon from "../../assets/latte-art.png";
+import dessertIcon from "../../assets/strawberry-cake.png";
+import gridIcon from "../../assets/grid.png";
+import shoppingBagIcon from "../../assets/shopping-bag.png";
+import mapRedIcon from "../../assets/mapred.png";
+
 import { mockProducts, mockStores } from "../../data/mockProducts";
 import { useSalezStore } from "../../store/useSalezStore";
 
@@ -329,32 +339,32 @@ export default function CustomerHome() {
 
   const quickMenus = [
     {
-      icon: "🥖",
+      icon: breadIcon,
       title: "빵",
       onClick: () => goCategory("bakery"),
     },
     {
-      icon: "🥗",
+      icon: saladIcon,
       title: "샐러드",
       onClick: () => goCategory("salad"),
     },
     {
-      icon: "🍱",
+      icon: bentoIcon,
       title: "도시락",
       onClick: () => goCategory("meal"),
     },
     {
-      icon: "☕",
+      icon: latteIcon,
       title: "카페",
       onClick: () => goCategory("cafe"),
     },
     {
-      icon: "🍰",
+      icon: dessertIcon,
       title: "디저트",
       onClick: () => goCategory("dessert"),
     },
     {
-      icon: "🛍️",
+      icon: gridIcon,
       title: "전체",
       onClick: goAllProducts,
     },
@@ -388,19 +398,23 @@ export default function CustomerHome() {
               />
             </div>
 
-            <button
-              type="button"
-              onClick={handleOpenAddressModal}
-              className="flex h-11 max-w-[112px] shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-3 text-emerald-800 ring-1 ring-emerald-100 active:scale-[0.98]"
-            >
-              <span className="text-[15px] leading-none">📍</span>
+<button
+  type="button"
+  onClick={handleOpenAddressModal}
+  className="flex h-11 max-w-[112px] shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-3 text-emerald-800 ring-1 ring-emerald-100 active:scale-[0.98]"
+>
+  <img
+    src={mapRedIcon}
+    alt="위치"
+    className="h-4 w-4 shrink-0 object-contain"
+  />
 
-              <span className="min-w-0 flex-1 truncate text-[12px] font-black">
-                {isLocationLoading
-                  ? "확인 중"
-                  : getShortAddress(userLocation?.address)}
-              </span>
-            </button>
+  <span className="min-w-0 flex-1 truncate text-[12px] font-black">
+    {isLocationLoading
+      ? "확인 중"
+      : getShortAddress(userLocation?.address)}
+  </span>
+</button>
           </div>
 
           <nav className="mt-5 grid grid-cols-6">
@@ -433,53 +447,81 @@ export default function CustomerHome() {
             {locationError}
           </p>
         )}
+<section className="mx-5 mt-4 overflow-hidden rounded-[28px] bg-gradient-to-br from-[#f1fbf4] via-white to-[#eef8e8] p-5 shadow-sm ring-1 ring-emerald-100">
+  <div className="relative">
+    <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-emerald-200/40 blur-2xl" />
+    <div className="absolute -left-10 bottom-0 h-24 w-24 rounded-full bg-lime-200/40 blur-2xl" />
 
-        <section className="mx-5 mt-4 overflow-hidden rounded-3xl bg-gradient-to-r from-[#f6fbf2] to-[#eef8e8] p-5 shadow-sm">
-          <div className="flex items-start justify-between gap-4">
-            <div className="min-w-0">
-              <span className="rounded-full bg-emerald-800 px-3 py-1 text-[12px] font-black text-white">
-                지금이 기회!
-              </span>
+    <div className="relative flex items-center justify-between gap-4">
+      <div className="min-w-0 flex-1">
+        <span className="inline-flex rounded-full bg-emerald-700 px-3 py-1 text-[11px] font-black text-white">
+          오늘의 마감특가
+        </span>
 
-              <p className="mt-4 text-[17px] font-black text-gray-900">
-                버려질 수도 있는 상품,
-              </p>
+        <h2 className="mt-4 text-[25px] leading-[1.22] font-black tracking-[-0.04em] text-emerald-800">
+          버려질 상품을
+          <br />
+          가치 있는 소비로
+        </h2>
 
-              <h2 className="mt-1 text-[30px] leading-tight font-black text-gray-950">
-                오늘의{" "}
-                <span className="tracking-wider text-emerald-800">SALEZ</span>로
-                <br />
-                가치 있게 소비하세요
-              </h2>
+        <p className="mt-3 text-[13px] leading-5 font-bold text-emerald-700/80">
+          가까운 매장의 마감 할인 상품을
+          <br />
+          오늘 바로 만나보세요
+        </p>
 
-              <p className="mt-4 text-[14px] leading-6 font-semibold text-gray-700">
-                유통기한 임박 상품부터
-                <br />
-                마감 할인 상품까지 한 곳에서!
-              </p>
-            </div>
+        <div className="mt-4 flex items-center gap-2">
+          <span className="rounded-full bg-white px-3 py-1.5 text-[11px] font-black text-emerald-700 shadow-sm ring-1 ring-emerald-100">
+            당일 수령
+          </span>
 
-            <div className="flex shrink-0 flex-col items-center">
-              <p className="text-[13px] font-black text-emerald-800">최대</p>
-              <p className="text-[52px] leading-none font-black text-emerald-800">
-                70%
-              </p>
-              <p className="text-[18px] font-black text-emerald-800">할인!</p>
+          <span className="rounded-full bg-white px-3 py-1.5 text-[11px] font-black text-emerald-700 shadow-sm ring-1 ring-emerald-100">
+            최대 할인
+          </span>
+        </div>
+      </div>
 
-              <div className="mt-6 text-[72px] leading-none">🛍️</div>
-            </div>
-          </div>
+      <div className="relative shrink-0">
+        <div className="flex h-[118px] w-[112px] flex-col items-center justify-center rounded-[26px] bg-emerald-700 text-white shadow-lg shadow-emerald-900/10">
+          <p className="text-[12px] font-black text-emerald-100">최대</p>
 
-          <div className="mt-4 flex justify-end">
-            <button
-              type="button"
-              disabled
-              className="cursor-default rounded-full bg-black/70 px-4 py-2 text-[13px] font-black text-white"
-            >
-              1 / 3 전체보기 〉
-            </button>
-          </div>
-        </section>
+          <p className="mt-1 text-[42px] leading-none font-black tracking-[-0.06em]">
+            70
+            <span className="text-[22px]">%</span>
+          </p>
+
+          <p className="mt-1 text-[13px] font-black text-emerald-100">
+            할인
+          </p>
+        </div>
+
+        <div className="absolute -bottom-5 left-1/2 flex h-14 w-14 -translate-x-1/2 items-center justify-center rounded-2xl bg-white shadow-sm ring-1 ring-emerald-100">
+          <img
+            src={shoppingBagIcon}
+            alt="쇼핑백"
+            className="h-10 w-10 object-contain"
+          />
+        </div>
+      </div>
+    </div>
+
+    <div className="relative mt-6 flex items-center justify-between">
+      <div className="flex gap-1.5">
+        <span className="h-1.5 w-4 rounded-full bg-emerald-700" />
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-200" />
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-200" />
+      </div>
+
+      <button
+        type="button"
+        disabled
+        className="cursor-default rounded-full bg-emerald-800 px-4 py-2 text-[12px] font-black text-white shadow-sm"
+      >
+        1 / 3 전체보기
+      </button>
+    </div>
+  </div>
+</section>
 
         <section className="mx-5 mt-4 grid grid-cols-3 gap-3">
           {quickMenus.map((menu) => (
@@ -487,9 +529,15 @@ export default function CustomerHome() {
               key={menu.title}
               type="button"
               onClick={menu.onClick}
-              className="flex min-h-[82px] flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white px-3 py-3 text-center shadow-sm active:scale-[0.98]"
+              className="flex min-h-[86px] flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white px-3 py-3 text-center shadow-sm active:scale-[0.98]"
             >
-              <span className="text-[34px] leading-none">{menu.icon}</span>
+              <div className="flex h-10 w-10 items-center justify-center">
+                <img
+                  src={menu.icon}
+                  alt={menu.title}
+                  className="h-9 w-9 object-contain"
+                />
+              </div>
 
               <span className="mt-2 text-[14px] font-black text-gray-900">
                 {menu.title}
@@ -498,34 +546,46 @@ export default function CustomerHome() {
           ))}
         </section>
 
-        <section className="mx-5 mt-4 flex items-center justify-between rounded-3xl bg-white px-5 py-4 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="text-[50px]">🌱</div>
+<section className="mx-5 mt-4 overflow-hidden rounded-[28px] bg-white p-5 shadow-sm ring-1 ring-gray-100">
+  <div className="flex items-center justify-between gap-4">
+    <div className="flex items-center gap-4">
+      <div className="relative flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-emerald-50">
+        <span className="text-[36px]">🌱</span>
+        <span className="absolute -right-1 -top-1 h-5 w-5 rounded-full bg-lime-300" />
+      </div>
 
-            <div>
-              <p className="text-[14px] font-black text-emerald-700">
-                SALEZ와 함께하는 가치 있는 소비
-              </p>
+      <div className="min-w-0">
+        <p className="text-[13px] font-black text-emerald-700">
+          SALEZ와 함께하는 가치소비
+        </p>
 
-              <h3 className="mt-1 text-[20px] font-black text-gray-900">
-                음식물 폐기 감소에 동참해요 🌎
-              </h3>
+        <h3 className="mt-1 text-[20px] leading-snug font-black tracking-[-0.03em] text-gray-950">
+          음식물 폐기 감소에
+          <br />
+          동참해요 🌎
+        </h3>
 
-              <p className="mt-1 text-[13px] font-semibold text-gray-500">
-                지금까지 12,345kg의 음식을 폐기로부터 막았어요!
-              </p>
-            </div>
-          </div>
+        <p className="mt-2 text-[13px] leading-5 font-semibold text-gray-500">
+          지금까지{" "}
+          <span className="font-black text-emerald-700">12,345kg</span>의
+          음식을 폐기로부터 막았어요!
+        </p>
+      </div>
+    </div>
 
-          <button
-            type="button"
-            disabled
-            className="shrink-0 cursor-default rounded-full bg-emerald-800 px-4 py-2 text-[13px] font-black text-white"
-          >
-            더보기 〉
-          </button>
-        </section>
+    <button
+      type="button"
+      disabled
+      className="shrink-0 cursor-default rounded-full bg-emerald-800 px-4 py-2.5 text-[13px] font-black text-white shadow-sm"
+    >
+      더보기 〉
+    </button>
+  </div>
 
+  <div className="mt-4 h-2 overflow-hidden rounded-full bg-gray-100">
+    <div className="h-full w-[68%] rounded-full bg-emerald-500" />
+  </div>
+</section>
         <section className="mx-5 mt-5">
           <div className="mb-3 flex items-center justify-between">
             <h2 className="text-[19px] font-black text-gray-900">

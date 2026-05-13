@@ -57,7 +57,7 @@ export default function Checkout() {
       <>
         <CustomerHeader title="주문 확인" showBack />
 
-        <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-5 text-center">
+        <main className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-5 pb-28 text-center">
           <div className="text-[48px]">🛒</div>
 
           <h1 className="mt-4 text-[22px] font-black text-gray-900">
@@ -148,7 +148,7 @@ export default function Checkout() {
     <>
       <CustomerHeader title="주문 확인" showBack />
 
-      <main className="min-h-screen bg-gray-50 px-5 pt-5 pb-32">
+      <main className="min-h-screen bg-gray-50 px-5 pt-5 pb-72">
         <section className="rounded-3xl bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <h2 className="text-[18px] font-black text-gray-900">주문 상품</h2>
@@ -277,17 +277,20 @@ export default function Checkout() {
         <section className="mt-4 rounded-3xl bg-white p-5 shadow-sm">
           <h2 className="text-[18px] font-black text-gray-900">결제 수단</h2>
 
-          <button className="mt-4 w-full rounded-2xl border-2 border-emerald-500 bg-emerald-50 px-4 py-4 text-left text-[15px] font-bold text-emerald-700">
+          <button
+            type="button"
+            className="mt-4 w-full rounded-2xl border-2 border-emerald-500 bg-emerald-50 px-4 py-4 text-left text-[15px] font-bold text-emerald-700"
+          >
             간편 결제
           </button>
         </section>
 
-        <div className="fixed bottom-0 left-1/2 w-full max-w-[430px] -translate-x-1/2 border-t border-gray-100 bg-white p-5">
-          <div className="mb-4 space-y-2">
+<div className="fixed bottom-0 left-1/2 z-50 w-full max-w-[430px] -translate-x-1/2 bg-white px-5 pt-4 pb-[92px] shadow-[0_-10px_30px_rgba(0,0,0,0.04)]">          <div className="mb-4 space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-[14px] font-bold text-gray-500">
                 총 수량
               </span>
+
               <span className="text-[15px] font-black text-gray-900">
                 {totalQuantity}개
               </span>
@@ -297,6 +300,7 @@ export default function Checkout() {
               <span className="text-[15px] font-bold text-gray-500">
                 총 결제 금액
               </span>
+
               <span className="text-[24px] font-black text-gray-900">
                 {totalPrice.toLocaleString("ko-KR")}원
               </span>

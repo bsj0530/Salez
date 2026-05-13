@@ -26,6 +26,7 @@ export default function ReviewWrite() {
     return (
       <>
         <CustomerHeader title="리뷰 작성" showBack />
+
         <main className="px-5 py-10 text-center">
           <p className="text-gray-500">주문 정보를 찾을 수 없습니다.</p>
         </main>
@@ -56,14 +57,16 @@ export default function ReviewWrite() {
     <>
       <CustomerHeader title="리뷰 작성" showBack />
 
-      <main className="min-h-screen bg-gray-50 px-5 py-6">
+      <main className="min-h-screen bg-gray-50 px-5 pt-6 pb-40">
         <section className="rounded-3xl bg-white p-5 shadow-sm">
           <p className="text-[13px] font-bold text-emerald-600">
             {order.storeName}
           </p>
+
           <h1 className="mt-1 text-[22px] font-black text-gray-900">
             {order.productName}
           </h1>
+
           <p className="mt-2 text-[14px] text-gray-500">
             상품은 만족스러우셨나요?
           </p>
@@ -79,6 +82,7 @@ export default function ReviewWrite() {
                   <span className="text-[15px] font-bold text-gray-800">
                     {item.label}
                   </span>
+
                   <span className="text-[13px] font-bold text-emerald-600">
                     {ratings[item.key]}점
                   </span>
@@ -90,11 +94,12 @@ export default function ReviewWrite() {
                       key={value}
                       type="button"
                       onClick={() => handleChangeRating(item.key, value)}
-                      className={`h-10 flex-1 rounded-xl text-[18px] ${
+                      className={[
+                        "h-10 flex-1 rounded-xl text-[18px] font-black",
                         value <= ratings[item.key]
                           ? "bg-emerald-500 text-white"
-                          : "bg-gray-100 text-gray-300"
-                      }`}
+                          : "bg-gray-100 text-gray-300",
+                      ].join(" ")}
                     >
                       ★
                     </button>
@@ -108,7 +113,10 @@ export default function ReviewWrite() {
         <section className="mt-5 rounded-3xl bg-white p-5 shadow-sm">
           <h2 className="text-[18px] font-black text-gray-900">사진 업로드</h2>
 
-          <button className="mt-4 flex h-32 w-full items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 text-[14px] font-bold text-gray-400">
+          <button
+            type="button"
+            className="mt-4 flex h-32 w-full items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 bg-gray-50 text-[14px] font-bold text-gray-400"
+          >
             + 사진 추가
           </button>
         </section>
@@ -122,9 +130,9 @@ export default function ReviewWrite() {
           />
         </section>
 
-        <div className="mt-6">
-          <GreenButton onClick={handleSubmit}>작성 완료</GreenButton>
-        </div>
+<div className="fixed bottom-0 left-1/2 z-50 w-full max-w-[430px] -translate-x-1/2 bg-white px-5 pt-3 pb-[92px] shadow-[0_-10px_30px_rgba(0,0,0,0.04)]">
+  <GreenButton onClick={handleSubmit}>작성 완료</GreenButton>
+</div>
       </main>
     </>
   );
