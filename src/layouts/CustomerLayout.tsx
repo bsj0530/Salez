@@ -41,7 +41,6 @@ export default function CustomerLayout() {
   const isActive = (path: string) => {
     if (path.includes("?")) {
       const [pathname, search] = path.split("?");
-
       return location.pathname === pathname && location.search === `?${search}`;
     }
 
@@ -56,8 +55,8 @@ export default function CustomerLayout() {
     <div className="min-h-screen bg-[#f7f8f5]">
       <Outlet />
 
-      <nav className="fixed bottom-0 left-1/2 z-[100] w-full max-w-[430px] -translate-x-1/2 border-t border-gray-100 bg-white px-4 pt-4 pb-[calc(20px+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
-        <div className="grid grid-cols-5 items-end">
+      <nav className="fixed bottom-0 left-1/2 z-[100] w-full max-w-[430px] -translate-x-1/2 border-t border-gray-200 bg-white px-2 pt-3 pb-[calc(16px+env(safe-area-inset-bottom))]">
+        <div className="grid grid-cols-5">
           {navItems.map((item) => {
             const active = isActive(item.path);
 
@@ -66,32 +65,21 @@ export default function CustomerLayout() {
                 key={item.label}
                 type="button"
                 onClick={() => navigate(item.path)}
-                className="relative flex flex-col items-center justify-center gap-1"
+                className="flex flex-col items-center justify-center gap-1.5"
               >
-                {active && (
-                  <span className="absolute -top-2 h-1 w-8 rounded-full bg-emerald-700" />
-                )}
-
-                <div
+                <img
+                  src={item.icon}
+                  alt={item.label}
                   className={[
-                    "flex h-8 w-8 items-center justify-center rounded-2xl transition",
-                    active ? "bg-emerald-50" : "bg-transparent",
+                    "h-6 w-6 object-contain transition",
+                    active ? "opacity-100" : "opacity-40",
                   ].join(" ")}
-                >
-                  <img
-                    src={item.icon}
-                    alt={item.label}
-                    className={[
-                      "h-5 w-5 object-contain transition",
-                      active ? "scale-110 opacity-100" : "opacity-65",
-                    ].join(" ")}
-                  />
-                </div>
+                />
 
                 <span
                   className={[
-                    "text-[11px] font-black leading-none",
-                    active ? "text-emerald-700" : "text-gray-500",
+                    "text-[10px] font-semibold leading-none",
+                    active ? "text-black" : "text-gray-400",
                   ].join(" ")}
                 >
                   {item.label}
