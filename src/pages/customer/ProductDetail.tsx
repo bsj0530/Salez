@@ -41,7 +41,7 @@ export default function ProductDetail() {
     <>
       <CustomerHeader title="상품 상세" showBack />
 
-      <main className="min-h-screen bg-white pb-32">
+      <main className="min-h-screen bg-white pb-52">
         <div className="h-72 w-full bg-gray-100">
           <img
             src={product.imageUrl}
@@ -99,14 +99,14 @@ export default function ProductDetail() {
         </section>
 
         {isAdded && (
-          <div className="fixed bottom-[104px] left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 px-5">
+          <div className="fixed bottom-[168px] left-1/2 z-[60] w-full max-w-[430px] -translate-x-1/2 px-5">
             <div className="rounded-2xl bg-gray-900 px-4 py-3 text-center text-[14px] font-bold text-white shadow-xl">
               장바구니에 담겼어요
             </div>
           </div>
         )}
 
-        <div className="fixed bottom-0 left-1/2 w-full max-w-[430px] -translate-x-1/2 border-t border-gray-100 bg-white p-5">
+        <div className="fixed bottom-[72px] left-1/2 z-50 w-full max-w-[430px] -translate-x-1/2 bg-white px-5 pt-3 pb-3">
           {cartCount > 0 && (
             <button
               type="button"

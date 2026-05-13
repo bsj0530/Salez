@@ -19,6 +19,7 @@ import OrderStoreList from "./pages/customer/OrderStoreList";
 import CustomerOrders from "./pages/customer/CustomerOrders";
 import Pickup from "./pages/customer/Pickup";
 import ReviewWrite from "./pages/customer/ReviewWrite";
+import MyPage from "./pages/customer/MyPage";
 
 /**
  * 매장 앱
@@ -57,6 +58,9 @@ export default function RootRoute() {
           <Route path="products/:productId" element={<ProductDetail />} />
 
           <Route path="cart" element={<Cart />} />
+
+          {/* 마이페이지 */}
+          <Route path="my" element={<MyPage />} />
 
           {/* 장바구니 전체 결제 */}
           <Route path="checkout" element={<Checkout />} />

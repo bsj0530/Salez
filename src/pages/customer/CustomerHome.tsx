@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router";
+import logo from "../../assets/logo.png";
 import { mockProducts, mockStores } from "../../data/mockProducts";
 import { useSalezStore } from "../../store/useSalezStore";
 
-type TopTab = "home" | "farm" | "bakery" | "meal" | "event";
+type TopTab = "home" | "bakery" | "salad" | "meal" | "cafe" | "dessert";
+type CategoryKey = Exclude<TopTab, "home">;
 
 function getDistanceKm(
   fromLat: number,
@@ -36,6 +38,36 @@ function formatDistance(distanceKm: number) {
   return `${distanceKm.toFixed(1)}km`;
 }
 
+function getShortAddress(address?: string) {
+  if (!address) return "위치";
+
+  const parts = address.split(" ").filter(Boolean);
+
+  if (parts.length === 0) return "위치";
+
+  return parts[parts.length - 1];
+}
+
+function isBakeryCategory(category: string) {
+  return ["bread", "bakery", "sandwich"].includes(category);
+}
+
+function isSaladCategory(category: string) {
+  return ["salad"].includes(category);
+}
+
+function isMealCategory(category: string) {
+  return ["meal", "lunchBox", "sideDish"].includes(category);
+}
+
+function isCafeCategory(category: string) {
+  return ["cafe", "coffee", "drink"].includes(category);
+}
+
+function isDessertCategory(category: string) {
+  return ["dessert", "cake"].includes(category);
+}
+
 export default function CustomerHome() {
   const navigate = useNavigate();
 
@@ -54,6 +86,18 @@ export default function CustomerHome() {
   const [isAddressSearching, setIsAddressSearching] = useState(false);
 
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const goAllProducts = () => {
+    navigate("/customer/products");
+  };
+
+  const goCategory = (category: CategoryKey) => {
+    navigate(`/customer/products?category=${category}`);
+  };
+
+  const goRecommendProducts = () => {
+    navigate("/customer/products?category=recommend");
+  };
 
   const getAddressByCoords = (lat: number, lng: number) => {
     if (!window.kakao) {
@@ -226,9 +270,11 @@ export default function CustomerHome() {
         };
       })
       .filter((product) => {
+        const item = product as any;
         const store = product.store;
         const name = product.name.toLowerCase();
         const storeName = store?.name.toLowerCase() ?? "";
+        const category = String(item.category ?? "");
 
         if (
           keyword &&
@@ -239,79 +285,78 @@ export default function CustomerHome() {
         }
 
         if (selectedTab === "bakery") {
-          return (
-            name.includes("빵") ||
-            name.includes("샌드위치") ||
-            name.includes("베이커리")
-          );
+          return isBakeryCategory(category);
         }
 
-        if (selectedTab === "farm") {
-          return (
-            name.includes("사과") ||
-            name.includes("감자") ||
-            name.includes("농산물") ||
-            name.includes("과일")
-          );
+        if (selectedTab === "salad") {
+          return isSaladCategory(category);
         }
 
         if (selectedTab === "meal") {
-          return (
-            name.includes("반찬") ||
-            name.includes("도시락") ||
-            name.includes("간편식") ||
-            name.includes("샌드위치")
-          );
+          return isMealCategory(category);
+        }
+
+        if (selectedTab === "cafe") {
+          return isCafeCategory(category);
+        }
+
+        if (selectedTab === "dessert") {
+          return isDessertCategory(category);
         }
 
         return true;
       });
   }, [query, selectedTab, storesWithDistance]);
 
+  const recommendedProducts = useMemo(() => {
+    return productsWithStore.filter((product) => {
+      const item = product as any;
+      return item.isRecommended === true || product.discountRate >= 50;
+    });
+  }, [productsWithStore]);
+
+  const homeProducts =
+    recommendedProducts.length > 0 ? recommendedProducts : productsWithStore;
+
   const topTabs: { label: string; value: TopTab }[] = [
     { label: "홈", value: "home" },
-    { label: "농산물", value: "farm" },
-    { label: "베이커리", value: "bakery" },
-    { label: "간편식 · 반찬", value: "meal" },
-    { label: "이벤트", value: "event" },
+    { label: "빵", value: "bakery" },
+    { label: "샐러드", value: "salad" },
+    { label: "도시락", value: "meal" },
+    { label: "카페", value: "cafe" },
+    { label: "디저트", value: "dessert" },
   ];
 
   const quickMenus = [
     {
-      icon: "🕘",
-      title: "마감임박",
-      desc: "오늘 안에 득템!",
-      onClick: () => setSelectedTab("home"),
+      icon: "🥖",
+      title: "빵",
+      onClick: () => goCategory("bakery"),
     },
     {
-      icon: "🥖",
-      title: "베이커리",
-      desc: "빵 · 디저트 할인",
-      onClick: () => setSelectedTab("bakery"),
+      icon: "🥗",
+      title: "샐러드",
+      onClick: () => goCategory("salad"),
     },
     {
       icon: "🍱",
-      title: "간편식 · 반찬",
-      desc: "당일 조리 식품",
-      onClick: () => setSelectedTab("meal"),
+      title: "도시락",
+      onClick: () => goCategory("meal"),
     },
     {
-      icon: "🥬",
-      title: "과일 · 농산물",
-      desc: "신선한 제철 농산물",
-      onClick: () => setSelectedTab("farm"),
+      icon: "☕",
+      title: "카페",
+      onClick: () => goCategory("cafe"),
     },
     {
-      icon: "🏷️",
-      title: "최대 할인",
-      desc: "최대 70% 혜택",
-      onClick: () => setSelectedTab("home"),
+      icon: "🍰",
+      title: "디저트",
+      onClick: () => goCategory("dessert"),
     },
     {
-      icon: "🚚",
-      title: "무료배송",
-      desc: "일부 상품 무료배송",
-      onClick: () => setSelectedTab("home"),
+      icon: "🛍️",
+      title: "전체",
+      onClick: goAllProducts,
     },
   ];
 
@@ -322,23 +367,14 @@ export default function CustomerHome() {
           <div className="flex items-center gap-3">
             <button
               type="button"
-              onClick={handleOpenAddressModal}
-              className="flex min-w-0 shrink-0 items-center gap-2"
+              onClick={() => navigate("/customer/home")}
+              className="flex shrink-0 items-center"
             >
-              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-800 text-white">
-                📍
-              </div>
-
-              <div className="text-left">
-                <h1 className="text-[28px] leading-none font-black tracking-wide text-emerald-800">
-                  SALEZ
-                </h1>
-                <p className="mt-1 max-w-[110px] truncate text-[11px] font-semibold text-gray-500">
-                  {isLocationLoading
-                    ? "위치 확인 중..."
-                    : userLocation?.address || "가치 있는 소비의 시작"}
-                </p>
-              </div>
+              <img
+                src={logo}
+                alt="SALEZ"
+                className="h-10 w-auto object-contain"
+              />
             </button>
 
             <div className="flex h-11 min-w-0 flex-1 items-center gap-2 rounded-full border border-gray-200 bg-white px-4">
@@ -354,30 +390,38 @@ export default function CustomerHome() {
 
             <button
               type="button"
-              onClick={() => navigate("/customer/cart")}
-              className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-[22px]"
+              onClick={handleOpenAddressModal}
+              className="flex h-11 max-w-[112px] shrink-0 items-center gap-1.5 rounded-full bg-emerald-50 px-3 text-emerald-800 ring-1 ring-emerald-100 active:scale-[0.98]"
             >
-              🔔
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-emerald-700 px-1 text-[11px] font-black text-white">
-                  {cartCount}
-                </span>
-              )}
+              <span className="text-[15px] leading-none">📍</span>
+
+              <span className="min-w-0 flex-1 truncate text-[12px] font-black">
+                {isLocationLoading
+                  ? "확인 중"
+                  : getShortAddress(userLocation?.address)}
+              </span>
             </button>
           </div>
 
-          <nav className="mt-5 flex items-center justify-between">
+          <nav className="mt-5 grid grid-cols-6">
             {topTabs.map((tab) => (
               <button
                 key={tab.value}
                 type="button"
-                onClick={() => setSelectedTab(tab.value)}
-                className="relative px-1 pb-3 text-[15px] font-black text-gray-900"
+                onClick={() => {
+                  if (tab.value === "home") {
+                    setSelectedTab("home");
+                    return;
+                  }
+
+                  goCategory(tab.value);
+                }}
+                className="relative flex justify-center pb-3 text-[14px] font-black text-gray-900"
               >
                 {tab.label}
 
                 {selectedTab === tab.value && (
-                  <span className="absolute bottom-0 left-1/2 h-1 w-full -translate-x-1/2 rounded-full bg-emerald-700" />
+                  <span className="absolute bottom-0 left-1/2 h-1 w-5 -translate-x-1/2 rounded-full bg-emerald-700" />
                 )}
               </button>
             ))}
@@ -411,7 +455,7 @@ export default function CustomerHome() {
               <p className="mt-4 text-[14px] leading-6 font-semibold text-gray-700">
                 유통기한 임박 상품부터
                 <br />
-                과일 · 농산물까지 한 곳에서!
+                마감 할인 상품까지 한 곳에서!
               </p>
             </div>
 
@@ -429,8 +473,8 @@ export default function CustomerHome() {
           <div className="mt-4 flex justify-end">
             <button
               type="button"
-              onClick={() => navigate("/customer/products")}
-              className="rounded-full bg-black/70 px-4 py-2 text-[13px] font-black text-white"
+              disabled
+              className="cursor-default rounded-full bg-black/70 px-4 py-2 text-[13px] font-black text-white"
             >
               1 / 3 전체보기 〉
             </button>
@@ -443,18 +487,12 @@ export default function CustomerHome() {
               key={menu.title}
               type="button"
               onClick={menu.onClick}
-              className="flex min-h-[82px] items-center gap-3 rounded-2xl border border-gray-100 bg-white px-3 py-3 text-left shadow-sm active:scale-[0.98]"
+              className="flex min-h-[82px] flex-col items-center justify-center rounded-2xl border border-gray-100 bg-white px-3 py-3 text-center shadow-sm active:scale-[0.98]"
             >
-              <span className="text-[33px]">{menu.icon}</span>
+              <span className="text-[34px] leading-none">{menu.icon}</span>
 
-              <span className="min-w-0">
-                <span className="block text-[15px] font-black text-gray-900">
-                  {menu.title}
-                </span>
-
-                <span className="mt-1 block truncate text-[12px] font-semibold text-gray-500">
-                  {menu.desc}
-                </span>
+              <span className="mt-2 text-[14px] font-black text-gray-900">
+                {menu.title}
               </span>
             </button>
           ))}
@@ -481,7 +519,8 @@ export default function CustomerHome() {
 
           <button
             type="button"
-            className="shrink-0 rounded-full bg-emerald-800 px-4 py-2 text-[13px] font-black text-white"
+            disabled
+            className="shrink-0 cursor-default rounded-full bg-emerald-800 px-4 py-2 text-[13px] font-black text-white"
           >
             더보기 〉
           </button>
@@ -495,25 +534,26 @@ export default function CustomerHome() {
 
             <button
               type="button"
-              onClick={() => navigate("/customer/products")}
+              onClick={goRecommendProducts}
               className="text-[13px] font-black text-emerald-700"
             >
               전체보기
             </button>
           </div>
 
-          {productsWithStore.length === 0 ? (
+          {homeProducts.length === 0 ? (
             <div className="rounded-3xl bg-white p-8 text-center shadow-sm">
               <p className="text-[16px] font-black text-gray-900">
                 검색 결과가 없어요
               </p>
+
               <p className="mt-2 text-[13px] font-semibold text-gray-400">
                 다른 검색어를 입력해보세요.
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3">
-              {productsWithStore.slice(0, 4).map((product) => {
+              {homeProducts.slice(0, 4).map((product) => {
                 const item = product as any;
                 const store = product.store;
 
@@ -526,11 +566,12 @@ export default function CustomerHome() {
                 const originalPrice =
                   item.originalPrice || product.originalPrice;
                 const salePrice = product.salePrice;
+
                 return (
                   <button
                     key={product.id}
                     type="button"
-                    onClick={() => navigate(`/customer/products/${product.id}`)}
+                    onClick={goRecommendProducts}
                     className="overflow-hidden rounded-2xl bg-white text-left shadow-sm active:scale-[0.98]"
                   >
                     <div className="relative h-28 overflow-hidden bg-gray-100">
@@ -541,7 +582,7 @@ export default function CustomerHome() {
                       />
 
                       <span className="absolute top-2 left-2 rounded-md bg-emerald-700 px-2 py-1 text-[12px] font-black text-white">
-                        {item.deliveryType === "delivery" ? "배송" : "수령"}
+                        추천
                       </span>
 
                       <span className="absolute bottom-0 left-0 rounded-tr-lg bg-red-500 px-2 py-1 text-[15px] font-black text-white">
@@ -560,7 +601,7 @@ export default function CustomerHome() {
 
                       <div className="mt-1 flex items-end gap-2">
                         <p className="text-[17px] font-black text-gray-950">
-                          {salePrice.toLocaleString("ko-KR")}원{" "}
+                          {salePrice.toLocaleString("ko-KR")}원
                         </p>
 
                         <p className="text-[13px] font-bold text-gray-400 line-through">

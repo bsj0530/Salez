@@ -1,3 +1,21 @@
+export type ProductCategory =
+  | "bread"
+  | "bakery"
+  | "sandwich"
+  | "cake"
+  | "dessert"
+  | "salad"
+  | "fruit"
+  | "vegetable"
+  | "farm"
+  | "meal"
+  | "lunchBox"
+  | "sideDish"
+  | "cafe"
+  | "coffee"
+  | "drink"
+  | "event";
+
 export type Store = {
   id: string;
   name: string;
@@ -31,6 +49,8 @@ export type Product = {
   address: string;
   lat: number;
   lng: number;
-  category: "bread" | "cake" | "sandwich" | "salad" | "dessert";
+  category: ProductCategory;
   expiryDate: string;
+  isEvent?: boolean;
+  isRecommended?: boolean;
 };
