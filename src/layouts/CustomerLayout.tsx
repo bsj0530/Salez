@@ -49,13 +49,6 @@ export default function CustomerLayout() {
       return location.pathname === "/customer/home";
     }
 
-    if (path === "/customer/products?category=recommend") {
-      return (
-        location.pathname === "/customer/products" &&
-        location.search === "?category=recommend"
-      );
-    }
-
     return location.pathname.startsWith(path);
   };
 
@@ -63,7 +56,7 @@ export default function CustomerLayout() {
     <div className="min-h-screen bg-[#f7f8f5]">
       <Outlet />
 
-      <nav className="fixed bottom-0 left-1/2 z-[100] w-full max-w-[430px] -translate-x-1/2 border-t border-gray-100 bg-white px-4 pt-2 pb-3 shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
+      <nav className="fixed bottom-0 left-1/2 z-[100] w-full max-w-[430px] -translate-x-1/2 border-t border-gray-100 bg-white px-4 pt-2 pb-[calc(12px+env(safe-area-inset-bottom))] shadow-[0_-8px_24px_rgba(0,0,0,0.05)]">
         <div className="grid grid-cols-5 items-end">
           {navItems.map((item) => {
             const active = isActive(item.path);

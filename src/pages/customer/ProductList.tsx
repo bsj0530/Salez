@@ -8,9 +8,9 @@ type ProductListCategory =
   | "all"
   | "recommend"
   | "bakery"
-  | "salad"
-  | "meal"
-  | "cafe"
+  | "lunchBox"
+  | "sideDish"
+  | "farm"
   | "dessert"
   | "event";
 
@@ -20,10 +20,10 @@ const categoryTabs: {
 }[] = [
   { label: "전체", value: "all" },
   { label: "추천", value: "recommend" },
-  { label: "빵", value: "bakery" },
-  { label: "샐러드", value: "salad" },
-  { label: "도시락", value: "meal" },
-  { label: "카페", value: "cafe" },
+  { label: "베이커리", value: "bakery" },
+  { label: "도시락", value: "lunchBox" },
+  { label: "반찬", value: "sideDish" },
+  { label: "농산물", value: "farm" },
   { label: "디저트", value: "dessert" },
 ];
 
@@ -31,9 +31,9 @@ function normalizeCategory(category: string | null): ProductListCategory {
   if (
     category === "recommend" ||
     category === "bakery" ||
-    category === "salad" ||
-    category === "meal" ||
-    category === "cafe" ||
+    category === "lunchBox" ||
+    category === "sideDish" ||
+    category === "farm" ||
     category === "dessert" ||
     category === "event"
   ) {
@@ -45,11 +45,11 @@ function normalizeCategory(category: string | null): ProductListCategory {
 
 function getHeaderTitle(category: ProductListCategory) {
   if (category === "recommend") return "추천상품";
-  if (category === "bakery") return "빵 마감 할인";
-  if (category === "salad") return "샐러드 할인";
-  if (category === "meal") return "도시락 할인";
-  if (category === "cafe") return "카페 할인";
-  if (category === "dessert") return "디저트 할인";
+  if (category === "bakery") return "베이커리 마감 할인";
+  if (category === "lunchBox") return "도시락 마감 할인";
+  if (category === "sideDish") return "반찬 마감 할인";
+  if (category === "farm") return "농산물 마감 할인";
+  if (category === "dessert") return "디저트 마감 할인";
   if (category === "event") return "특가 상품";
   return "마감 할인 상품";
 }
@@ -71,20 +71,20 @@ function isProductInCategory(
     return ["bread", "bakery", "sandwich"].includes(productCategory);
   }
 
-  if (selectedCategory === "salad") {
-    return ["salad"].includes(productCategory);
+  if (selectedCategory === "lunchBox") {
+    return ["lunchBox", "meal"].includes(productCategory);
   }
 
-  if (selectedCategory === "meal") {
-    return ["meal", "lunchBox", "sideDish"].includes(productCategory);
+  if (selectedCategory === "sideDish") {
+    return ["sideDish"].includes(productCategory);
   }
 
-  if (selectedCategory === "cafe") {
-    return ["cafe", "coffee", "drink"].includes(productCategory);
+  if (selectedCategory === "farm") {
+    return ["fruit", "vegetable", "farm"].includes(productCategory);
   }
 
   if (selectedCategory === "dessert") {
-    return ["dessert", "cake"].includes(productCategory);
+    return ["dessert", "cake", "snack"].includes(productCategory);
   }
 
   if (selectedCategory === "event") {
@@ -124,8 +124,8 @@ export default function ProductList() {
     <>
       <CustomerHeader title={getHeaderTitle(selectedCategory)} showBack />
 
-      <main className="min-h-screen bg-gray-50 px-5 pt-5 pb-28">
-        <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1">
+      <main className="min-h-screen bg-gray-50 px-5 pt-5 pb-[calc(112px+env(safe-area-inset-bottom))]">
+        <div className="mb-4 flex items-center gap-2 overflow-x-auto pb-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {categoryTabs.map((category) => {
             const isActive = selectedCategory === category.value;
 
@@ -135,9 +135,9 @@ export default function ProductList() {
                 type="button"
                 onClick={() => handleCategoryClick(category.value)}
                 className={[
-                  "shrink-0 rounded-full px-4 py-2 text-[13px] font-bold shadow-sm",
+                  "shrink-0 rounded-full px-4 py-2 text-[13px] font-bold shadow-sm transition active:scale-[0.98]",
                   isActive
-                    ? "bg-emerald-500 text-white"
+                    ? "bg-emerald-600 text-white"
                     : "bg-white text-gray-700",
                 ].join(" ")}
               >

@@ -95,8 +95,8 @@ export default function CustomerMap() {
         </div>
 
         {!selectedStore && (
-          <div className="absolute bottom-5 left-1/2 z-10 w-full max-w-[430px] -translate-x-1/2 px-5">
-            <div className="rounded-3xl bg-white px-5 py-4 shadow-xl">
+          <div className="fixed bottom-[96px] left-1/2 z-30 w-full max-w-[430px] -translate-x-1/2 px-5">
+            <div className="rounded-3xl bg-white px-5 py-4 shadow-xl ring-1 ring-gray-100">
               <p className="text-center text-[16px] font-black text-gray-900">
                 총 {mockStores.length}군데가 있습니다
               </p>
@@ -105,8 +105,8 @@ export default function CustomerMap() {
         )}
 
         {selectedStore && (
-          <div className="absolute bottom-5 left-1/2 z-20 w-full max-w-[430px] -translate-x-1/2 px-5">
-            <div className="overflow-hidden rounded-3xl bg-white shadow-2xl">
+          <div className="fixed bottom-[96px] left-1/2 z-40 w-full max-w-[430px] -translate-x-1/2 px-5">
+            <div className="overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-gray-100">
               <div className="flex gap-4 p-4">
                 <img
                   src={selectedStore.imageUrl}

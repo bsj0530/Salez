@@ -127,12 +127,6 @@ export default function OrderComplete() {
             홈으로 돌아가기
           </GreenButton>
 
-          <GreenButton
-            variant="outline"
-            onClick={() => navigate(`/customer/orders/${order.id}/stores`)}
-          >
-            매장별 주문번호 보기
-          </GreenButton>
         </div>
       </main>
     </>

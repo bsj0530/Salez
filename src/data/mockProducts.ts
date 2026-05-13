@@ -1,5 +1,21 @@
 import type { Product, Store } from "../types/product";
 
+import bread1Image from "../assets/bread1.webp";
+import bread2Image from "../assets/bread2.jpg";
+import bread3Image from "../assets/bread3.jpg";
+
+import bulgogiImage from "../assets/bulgogi.jpg";
+import chickenImage from "../assets/chicken.png";
+import meetImage from "../assets/meet.jpg";
+import herbsImage from "../assets/herbs.webp";
+import eggImage from "../assets/egg.jpg";
+import balancedDietImage from "../assets/balanced-diet.png";
+import kimchiImage from "../assets/kimchi.jpg";
+
+import cakeImage from "../assets/cake.avif";
+import donutImage from "../assets/donut.jpg";
+import cookieImage from "../assets/cookie.jpg";
+import tomatoImage from "../assets/tomato.jpg";
 export const defaultUserLocation = {
   lat: 37.588227,
   lng: 126.993606,
@@ -7,28 +23,31 @@ export const defaultUserLocation = {
 };
 
 const images = {
-  bread:
-    "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=800&auto=format&fit=crop",
-  sandwich:
-    "https://images.unsplash.com/photo-1528735602780-2552fd46c7af?q=80&w=800&auto=format&fit=crop",
-  cake:
-    "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=800&auto=format&fit=crop",
-  dessert:
-    "https://images.unsplash.com/photo-1551024601-bec78aea704b?q=80&w=800&auto=format&fit=crop",
-  coffee:
-    "https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?q=80&w=800&auto=format&fit=crop",
-  drink:
-    "https://images.unsplash.com/photo-1544145945-f90425340c7e?q=80&w=800&auto=format&fit=crop",
+  creamBread: bread1Image,
+  croissant: bread2Image,
+  sandwich: bread3Image,
+
+  jeyukLunchBox: meetImage,
+  chickenLunchBox: chickenImage,
+  bulgogiBowl: bulgogiImage,
+
+  sideDish: balancedDietImage,
+  kimchi: kimchiImage,
+  namul: herbsImage,
+  egg: eggImage,
+
   apple:
     "https://images.unsplash.com/photo-1560806887-1e4cd0b6cbd6?q=80&w=800&auto=format&fit=crop",
-  vegetable:
-    "https://images.unsplash.com/photo-1542838132-92c53300491e?q=80&w=800&auto=format&fit=crop",
-  lunchBox:
-    "https://images.unsplash.com/photo-1547592180-85f173990554?q=80&w=800&auto=format&fit=crop",
-  sideDish:
-    "https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=800&auto=format&fit=crop",
-};
+  potato:
+    "https://images.unsplash.com/photo-1518977676601-b53f82aba655?q=80&w=800&auto=format&fit=crop",
+  tomato: tomatoImage,
+  lettuce:
+    "https://images.unsplash.com/photo-1622206151226-18ca2c9ab4a1?q=80&w=800&auto=format&fit=crop",
 
+  cake: cakeImage,
+  donut: donutImage,
+  cookie: cookieImage,
+};
 export const mockStores: Store[] = [
   {
     id: "s1",
@@ -40,7 +59,7 @@ export const mockStores: Store[] = [
     rating: 4.7,
     lat: 37.5892,
     lng: 126.9951,
-    imageUrl: images.bread,
+    imageUrl: images.creamBread,
     openUntil: "22:00",
   },
   {
@@ -53,7 +72,7 @@ export const mockStores: Store[] = [
     rating: 4.6,
     lat: 37.5869,
     lng: 126.9918,
-    imageUrl: images.sandwich,
+    imageUrl: images.croissant,
     openUntil: "21:30",
   },
   {
@@ -79,7 +98,7 @@ export const mockStores: Store[] = [
     rating: 4.5,
     lat: 37.5849,
     lng: 126.9942,
-    imageUrl: images.vegetable,
+    imageUrl: images.potato,
     openUntil: "21:00",
   },
   {
@@ -105,7 +124,7 @@ export const mockStores: Store[] = [
     rating: 4.4,
     lat: 37.5833,
     lng: 126.9915,
-    imageUrl: images.lunchBox,
+    imageUrl: images.jeyukLunchBox,
     openUntil: "21:00",
   },
   {
@@ -118,7 +137,7 @@ export const mockStores: Store[] = [
     rating: 4.5,
     lat: 37.5931,
     lng: 126.9961,
-    imageUrl: images.vegetable,
+    imageUrl: images.tomato,
     openUntil: "21:00",
   },
   {
@@ -131,20 +150,7 @@ export const mockStores: Store[] = [
     rating: 4.7,
     lat: 37.5825,
     lng: 126.9952,
-    imageUrl: images.dessert,
-    openUntil: "22:00",
-  },
-  {
-    id: "s9",
-    name: "그린빈 카페",
-    brand: "카페",
-    address: "서울 성북구 성북로 102",
-    distance: 0.42,
-    distanceText: "420m",
-    rating: 4.6,
-    lat: 37.5911,
-    lng: 126.9971,
-    imageUrl: images.coffee,
+    imageUrl: images.donut,
     openUntil: "22:00",
   },
 ];
@@ -161,82 +167,124 @@ const productTemplates: Array<{
   imageUrl: string;
   storeIds: string[];
   isEvent?: boolean;
+  isRecommended?: boolean;
 }> = [
   {
-    name: "마감 빵 랜덤박스",
-    description: "당일 생산된 빵을 랜덤으로 구성한 마감 할인 세트",
-    originalPrice: 12000,
-    salePrice: 5900,
-    discountRate: 51,
+    name: "단팥 크림빵 2개",
+    description: "당일 구운 단팥 크림빵을 마감 할인 가격으로 판매합니다.",
+    originalPrice: 7600,
+    salePrice: 3900,
+    discountRate: 49,
     category: "bread",
     storageMethod: "상온 보관",
     qualityNotice: "당일 생산 상품이며 수령 후 빠른 섭취를 권장합니다.",
-    imageUrl: images.bread,
-    storeIds: ["s1", "s2"],
+    imageUrl: images.creamBread,
+    storeIds: ["s1"],
+    isRecommended: true,
   },
   {
-    name: "샌드위치 세트",
-    description: "간단한 식사로 좋은 샌드위치와 미니 베이커리 구성",
-    originalPrice: 9800,
-    salePrice: 5400,
-    discountRate: 45,
+    name: "버터 크루아상 3개",
+    description: "겹겹이 바삭한 크루아상 3개 구성입니다.",
+    originalPrice: 9600,
+    salePrice: 5200,
+    discountRate: 46,
+    category: "bread",
+    storageMethod: "상온 보관",
+    qualityNotice: "당일 생산 상품이며 수령 후 빠른 섭취를 권장합니다.",
+    imageUrl: images.croissant,
+    storeIds: ["s2"],
+  },
+  {
+    name: "햄치즈 샌드위치",
+    description: "햄, 치즈, 신선한 채소가 들어간 든든한 샌드위치입니다.",
+    originalPrice: 6800,
+    salePrice: 3900,
+    discountRate: 43,
     category: "sandwich",
     storageMethod: "냉장 보관",
     qualityNotice: "신선식품으로 수령 후 당일 섭취를 권장합니다.",
     imageUrl: images.sandwich,
     storeIds: ["s1", "s2"],
   },
+
   {
-    name: "조각 케이크 세트",
-    description: "남은 조각 케이크 2개를 묶은 마감 할인 상품",
-    originalPrice: 14000,
-    salePrice: 7900,
+    name: "제육볶음 도시락",
+    description: "매콤한 제육볶음과 밥, 기본 반찬이 함께 담긴 도시락입니다.",
+    originalPrice: 8900,
+    salePrice: 5200,
+    discountRate: 42,
+    category: "lunchBox",
+    storageMethod: "냉장 보관",
+    qualityNotice: "조리식품으로 수령 후 빠른 섭취를 권장합니다.",
+    imageUrl: images.jeyukLunchBox,
+    storeIds: ["s6"],
+    isRecommended: true,
+  },
+  {
+    name: "치킨마요 도시락",
+    description: "치킨, 마요소스, 밥이 어우러진 간편 한 끼 도시락입니다.",
+    originalPrice: 8200,
+    salePrice: 4900,
+    discountRate: 40,
+    category: "lunchBox",
+    storageMethod: "냉장 보관",
+    qualityNotice: "수령 후 전자레인지 조리 후 섭취해주세요.",
+    imageUrl: images.chickenLunchBox,
+    storeIds: ["s6"],
+  },
+  {
+    name: "불고기 도시락",
+    description: "달짝지근한 불고기와 밥을 함께 담은 든든한 도시락입니다.",
+    originalPrice: 9200,
+    salePrice: 5600,
+    discountRate: 39,
+    category: "meal",
+    storageMethod: "냉장 보관",
+    qualityNotice: "수령 후 전자레인지 조리 후 섭취해주세요.",
+    imageUrl: images.bulgogiBowl,
+    storeIds: ["s6"],
+  },
+
+  {
+    name: "계란말이 반찬",
+    description: "당일 조리한 부드러운 계란말이 반찬입니다.",
+    originalPrice: 5500,
+    salePrice: 3200,
+    discountRate: 42,
+    category: "sideDish",
+    storageMethod: "냉장 보관",
+    qualityNotice: "수령 후 냉장 보관하고 당일 섭취를 권장합니다.",
+    imageUrl: images.egg,
+    storeIds: ["s5"],
+  },
+  {
+    name: "볶음김치 반찬",
+    description: "밥반찬으로 먹기 좋은 매콤한 볶음김치입니다.",
+    originalPrice: 6200,
+    salePrice: 3500,
     discountRate: 44,
-    category: "cake",
+    category: "sideDish",
     storageMethod: "냉장 보관",
-    qualityNotice: "수령 후 냉장 보관하고 당일 섭취해주세요.",
-    imageUrl: images.cake,
-    storeIds: ["s8"],
+    qualityNotice: "조리식품으로 수령 후 빠른 섭취를 권장합니다.",
+    imageUrl: images.kimchi,
+    storeIds: ["s5"],
   },
   {
-    name: "디저트 모음 세트",
-    description: "머핀, 도넛, 쿠키류를 랜덤으로 구성한 디저트 세트",
-    originalPrice: 10000,
-    salePrice: 4900,
-    discountRate: 51,
-    category: "dessert",
-    storageMethod: "상온 보관",
-    qualityNotice: "당일 판매 상품으로 빠른 섭취를 권장합니다.",
-    imageUrl: images.dessert,
-    storeIds: ["s8"],
-  },
-  {
-    name: "아메리카노 마감 세트",
-    description: "마감 전 남은 커피와 간단한 베이커리 구성",
-    originalPrice: 8500,
+    name: "나물 반찬 2종",
+    description: "당일 무친 나물 반찬 2가지를 소량 구성으로 제공합니다.",
+    originalPrice: 7400,
     salePrice: 3900,
-    discountRate: 54,
-    category: "coffee",
-    storageMethod: "즉시 섭취 권장",
-    qualityNotice: "음료 상품은 수령 후 바로 섭취해주세요.",
-    imageUrl: images.coffee,
-    storeIds: ["s9"],
-  },
-  {
-    name: "카페 음료 랜덤박스",
-    description: "오늘 제조 가능한 음료를 할인 가격으로 제공하는 세트",
-    originalPrice: 10000,
-    salePrice: 4900,
-    discountRate: 51,
-    category: "drink",
+    discountRate: 47,
+    category: "sideDish",
     storageMethod: "냉장 보관",
-    qualityNotice: "수령 후 빠른 섭취를 권장합니다.",
-    imageUrl: images.drink,
-    storeIds: ["s9"],
+    qualityNotice: "수령 후 냉장 보관하고 당일 섭취를 권장합니다.",
+    imageUrl: images.namul,
+    storeIds: ["s5"],
   },
+
   {
     name: "못난이 사과 1kg",
-    description: "모양은 조금 다르지만 맛은 좋은 실속형 사과",
+    description: "모양은 조금 다르지만 맛은 좋은 실속형 사과입니다.",
     originalPrice: 8900,
     salePrice: 4900,
     discountRate: 45,
@@ -245,103 +293,95 @@ const productTemplates: Array<{
     qualityNotice: "외형 흠집이 있을 수 있으나 섭취에는 문제가 없습니다.",
     imageUrl: images.apple,
     storeIds: ["s3"],
+    isRecommended: true,
   },
   {
-    name: "제철 과일 랜덤박스",
-    description: "당일 입고된 제철 과일을 실속 있게 구성한 박스",
-    originalPrice: 15000,
-    salePrice: 7900,
-    discountRate: 47,
-    category: "fruit",
-    storageMethod: "냉장 보관",
-    qualityNotice: "신선도 유지를 위해 빠른 수령을 권장합니다.",
-    imageUrl: images.apple,
-    storeIds: ["s3", "s7"],
-  },
-  {
-    name: "오늘 수확 채소박스",
-    description: "상추, 오이, 애호박 등 당일 입고 채소 랜덤 구성",
-    originalPrice: 13000,
-    salePrice: 6900,
-    discountRate: 47,
+    name: "햇감자 1.5kg",
+    description: "조림, 볶음, 찜 요리에 활용하기 좋은 신선한 감자입니다.",
+    originalPrice: 7900,
+    salePrice: 4300,
+    discountRate: 46,
     category: "vegetable",
-    storageMethod: "냉장 보관",
-    qualityNotice: "신선도 유지를 위해 빠른 수령을 권장합니다.",
-    imageUrl: images.vegetable,
+    storageMethod: "서늘한 곳 보관",
+    qualityNotice: "일부 크기 차이나 흙 묻음이 있을 수 있습니다.",
+    imageUrl: images.potato,
     storeIds: ["s4", "s7"],
   },
   {
-    name: "쌈채소 실속 세트",
-    description: "오늘 판매분 중 남은 쌈채소를 할인 구성한 세트",
-    originalPrice: 7600,
+    name: "방울토마토 500g",
+    description: "간식이나 샐러드에 곁들이기 좋은 방울토마토입니다.",
+    originalPrice: 6900,
     salePrice: 3900,
-    discountRate: 49,
+    discountRate: 43,
+    category: "fruit",
+    storageMethod: "냉장 보관",
+    qualityNotice: "신선도 유지를 위해 빠른 수령을 권장합니다.",
+    imageUrl: images.tomato,
+    storeIds: ["s3", "s7"],
+  },
+  {
+    name: "상추 한 봉지",
+    description: "쌈이나 샐러드로 먹기 좋은 신선한 상추입니다.",
+    originalPrice: 4200,
+    salePrice: 2500,
+    discountRate: 40,
     category: "vegetable",
     storageMethod: "냉장 보관",
     qualityNotice: "잎채소 특성상 수령 후 빠른 섭취를 권장합니다.",
-    imageUrl: images.vegetable,
+    imageUrl: images.lettuce,
     storeIds: ["s4"],
   },
+
   {
-    name: "집밥 반찬 3종 세트",
-    description: "당일 조리된 반찬 3가지를 묶은 할인 세트",
-    originalPrice: 11000,
-    salePrice: 5900,
+    name: "딸기 생크림 조각케이크",
+    description: "부드러운 생크림과 딸기가 올라간 조각케이크입니다.",
+    originalPrice: 7200,
+    salePrice: 4200,
+    discountRate: 42,
+    category: "cake",
+    storageMethod: "냉장 보관",
+    qualityNotice: "수령 후 냉장 보관하고 당일 섭취해주세요.",
+    imageUrl: images.cake,
+    storeIds: ["s8"],
+  },
+  {
+    name: "초코 도넛 2개",
+    description: "초코 코팅이 올라간 달콤한 도넛 2개 구성입니다.",
+    originalPrice: 6400,
+    salePrice: 3500,
+    discountRate: 45,
+    category: "dessert",
+    storageMethod: "상온 보관",
+    qualityNotice: "당일 판매 상품으로 빠른 섭취를 권장합니다.",
+    imageUrl: images.donut,
+    storeIds: ["s8"],
+  },
+  {
+    name: "수제 쿠키 4개",
+    description: "바삭한 수제 쿠키 4개를 마감 할인으로 제공합니다.",
+    originalPrice: 7200,
+    salePrice: 3900,
     discountRate: 46,
-    category: "sideDish",
-    storageMethod: "냉장 보관",
-    qualityNotice: "수령 후 냉장 보관하고 당일 섭취를 권장합니다.",
-    imageUrl: images.sideDish,
-    storeIds: ["s5"],
+    category: "dessert",
+    storageMethod: "상온 보관",
+    qualityNotice: "당일 판매 상품으로 빠른 섭취를 권장합니다.",
+    imageUrl: images.cookie,
+    storeIds: ["s8"],
   },
+
   {
-    name: "오늘의 반찬 랜덤박스",
-    description: "마감 전 남은 인기 반찬을 랜덤으로 구성한 세트",
-    originalPrice: 13000,
-    salePrice: 6500,
-    discountRate: 50,
-    category: "sideDish",
-    storageMethod: "냉장 보관",
-    qualityNotice: "조리식품으로 수령 후 빠른 섭취를 권장합니다.",
-    imageUrl: images.sideDish,
-    storeIds: ["s5"],
-  },
-  {
-    name: "든든 도시락 마감세트",
-    description: "저녁 시간대 남은 도시락을 할인 판매하는 세트",
-    originalPrice: 9500,
+    name: "오늘의 마감 특가 상품",
+    description: "오늘 가장 할인율이 높은 상품을 한정 수량으로 제공합니다.",
+    originalPrice: 10000,
     salePrice: 4900,
-    discountRate: 48,
-    category: "lunchBox",
-    storageMethod: "냉장 보관",
-    qualityNotice: "조리식품으로 수령 후 빠른 섭취를 권장합니다.",
-    imageUrl: images.lunchBox,
-    storeIds: ["s6"],
-  },
-  {
-    name: "간편식 한 끼 세트",
-    description: "도시락과 간단한 사이드 메뉴를 함께 구성한 세트",
-    originalPrice: 12000,
-    salePrice: 6900,
-    discountRate: 43,
-    category: "meal",
-    storageMethod: "냉장 보관",
-    qualityNotice: "수령 후 전자레인지 조리 후 섭취해주세요.",
-    imageUrl: images.lunchBox,
-    storeIds: ["s6"],
-  },
-  {
-    name: "오늘의 70% 특가박스",
-    description: "매장별 남은 상품을 랜덤으로 구성한 초특가 세트",
-    originalPrice: 15000,
-    salePrice: 4500,
-    discountRate: 70,
+    discountRate: 51,
     category: "event",
     storageMethod: "상품별 상이",
-    qualityNotice: "랜덤 구성 상품으로 교환 및 구성 변경이 어렵습니다.",
-    imageUrl: images.dessert,
-    storeIds: ["s1", "s3", "s5", "s6", "s9"],
+    qualityNotice: "마감 할인 상품으로 수령 후 빠른 섭취를 권장합니다.",
+    imageUrl: images.creamBread,
+    storeIds: ["s1", "s5", "s6", "s8"],
     isEvent: true,
+    isRecommended: true,
   },
 ];
 
@@ -359,11 +399,11 @@ export const mockProducts: Product[] = productTemplates.flatMap(
       const pickupTimes = ["18:30", "19:00", "19:30", "20:00", "20:30"];
       const stockList = [2, 3, 5, 4, 6];
       const expiryDates = [
-        "2026년 4월 28일",
-        "2026년 4월 29일",
-        "2026년 4월 30일",
-        "2026년 5월 1일",
-        "2026년 5월 2일",
+        "2026년 5월 13일",
+        "2026년 5월 14일",
+        "2026년 5월 15일",
+        "2026년 5월 16일",
+        "2026년 5월 17일",
       ];
 
       return {
@@ -389,6 +429,7 @@ export const mockProducts: Product[] = productTemplates.flatMap(
         expiryDate:
           expiryDates[(templateIndex + storeIndex) % expiryDates.length],
         isEvent: template.isEvent ?? false,
+        isRecommended: template.isRecommended ?? false,
       };
     }),
 );
