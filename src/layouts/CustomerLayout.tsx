@@ -55,7 +55,7 @@ export default function CustomerLayout() {
     <div className="min-h-screen bg-[#f7f8f5]">
       <Outlet />
 
-      <nav className="fixed bottom-0 left-1/2 z-[100] w-full max-w-[430px] -translate-x-1/2 border-t border-gray-200 bg-white px-2 pt-3 pb-[calc(16px+env(safe-area-inset-bottom))]">
+      <nav className="fixed bottom-0 left-1/2 z-[100] w-full max-w-[430px] -translate-x-1/2 border-t border-gray-200 bg-white px-2 pt-3 pb-[max(28px,calc(12px+env(safe-area-inset-bottom)))]">
         <div className="grid grid-cols-5">
           {navItems.map((item) => {
             const active = isActive(item.path);
